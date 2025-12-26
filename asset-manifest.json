@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/PassiveGuard-frontend/static/css/main.0c51975f.css",
-    "main.js": "/PassiveGuard-frontend/static/js/main.1ecaba8f.js",
-    "index.html": "/PassiveGuard-frontend/index.html",
-    "main.0c51975f.css.map": "/PassiveGuard-frontend/static/css/main.0c51975f.css.map",
-    "main.1ecaba8f.js.map": "/PassiveGuard-frontend/static/js/main.1ecaba8f.js.map"
+    "main.css": "/static/css/main.0c51975f.css",
+    "main.js": "/static/js/main.eebbae8b.js",
+    "index.html": "/index.html",
+    "main.0c51975f.css.map": "/static/css/main.0c51975f.css.map",
+    "main.eebbae8b.js.map": "/static/js/main.eebbae8b.js.map"
   },
   "entrypoints": [
     "static/css/main.0c51975f.css",
-    "static/js/main.1ecaba8f.js"
+    "static/js/main.eebbae8b.js"
   ]
 }
