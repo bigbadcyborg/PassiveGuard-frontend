@@ -1,0 +1,16 @@
+.admin-traffic-page .admin-header h1 {
+  color: var(--neon-purple);
+}
+
+.admin-traffic-page .status-completed {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+}
+
+.admin-traffic-page .status-failed {
+  border-color: var(--neon-pink);
+  color: var(--neon-pink);
+}
+
+
+

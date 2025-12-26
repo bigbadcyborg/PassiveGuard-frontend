@@ -1,0 +1,89 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  position: relative;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--bg-secondary);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--neon-cyan);
+  border-radius: 0;
+  padding: 60px 40px;
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.1), inset 0 0 10px rgba(0, 243, 255, 0.05);
+  width: 100%;
+  max-width: 450px;
+  position: relative;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--neon-cyan), transparent, var(--neon-pink), transparent);
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.login-card h1 {
+  text-align: center;
+  color: var(--neon-cyan);
+  margin-bottom: 5px;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+
+.login-card h2 {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  font-weight: 400;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.error-message {
+  background-color: rgba(255, 0, 85, 0.1);
+  color: var(--neon-pink);
+  padding: 15px;
+  border-radius: 0;
+  margin-bottom: 25px;
+  border: 1px solid var(--neon-pink);
+  font-size: 13px;
+  text-align: center;
+}
+
+.login-hint {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.login-hint p {
+  margin: 5px 0;
+}
+
+.login-hint p:first-child {
+  color: var(--neon-cyan);
+  margin-bottom: 10px;
+}
+
+.btn-primary {
+  width: 100%;
+  margin-top: 10px;
+  height: 50px;
+  font-size: 16px;
+}
