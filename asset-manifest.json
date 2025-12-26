@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/PassiveGaurd-frontend/static/css/main.0c51975f.css",
+    "main.js": "/PassiveGaurd-frontend/static/js/main.2be8436b.js",
+    "index.html": "/PassiveGaurd-frontend/index.html",
+    "main.0c51975f.css.map": "/PassiveGaurd-frontend/static/css/main.0c51975f.css.map",
+    "main.2be8436b.js.map": "/PassiveGaurd-frontend/static/js/main.2be8436b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0c51975f.css",
+    "static/js/main.2be8436b.js"
+  ]
+}
