@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './Home.css';
@@ -40,6 +40,8 @@ const IconNetwork = () => (
   </svg>
 );
 
+// ... (Icon components remain the same)
+
 const iconMap = {
   search: <IconSearch />,
   taint: <IconTaint />,
@@ -54,47 +56,123 @@ const features = [
     subtitle: "SAST / SEMGREP / BANDIT",
     description: "Deep inspection of source code for hardcoded secrets, SQL injection, XSS, and insecure function calls using industry-leading engines.",
     color: "#00f3ff",
-    icon: "search"
+    icon: "search",
+    video: "/videos/static-analysis.mp4"
   },
   {
     title: "TAINT TRACKING",
     subtitle: "DATA FLOW ANALYSIS",
     description: "Automatically trace untrusted input from request parameters to security-critical sinks like database queries and shell commands.",
     color: "#ff0055",
-    icon: "taint"
+    icon: "taint",
+    video: "/videos/taint-tracking.mp4"
   },
   {
     title: "INFRASTRUCTURE AS CODE",
     subtitle: "DOCKER / K8S / TERRAFORM",
     description: "Scan your cloud infrastructure configurations for misconfigurations, privileged containers, and exposed secrets before they deploy.",
     color: "#bc13fe",
-    icon: "iac"
+    icon: "iac",
+    video: "/videos/security-shield.mp4"
   },
   {
     title: "SUPPLY CHAIN SECURITY",
     subtitle: "SCA / OSV / SBOM",
     description: "Track vulnerabilities in your open-source dependencies and generate comprehensive Software Bill of Materials (SBOM) in CycloneDX format.",
     color: "#39ff14",
-    icon: "supply"
+    icon: "supply",
+    video: "/videos/dependency-network.mp4"
   },
   {
     title: "NETWORK ANALYSIS",
     subtitle: "PCAP / PROTOCOL INSPECTION",
     description: "Passive analysis of packet captures to detect insecure protocols like HTTP, FTP, and Telnet, and identify plaintext credentials.",
     color: "#ff9e00",
-    icon: "network"
+    icon: "network",
+    video: "/videos/network-analysis.mp4"
   }
 ];
+
+const FeatureSlide = ({ feature }) => {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.playbackRate = 0.5; // Play at half speed to last 10s
+      video.play().catch(() => {});
+    }
+  }, [feature.video]); // Re-run when video source changes
+
+  return (
+    <div className="slide-content">
+      {feature.video && (
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="slide-bg-video"
+        >
+          <source src={process.env.PUBLIC_URL + feature.video + "?v=2"} type="video/mp4" />
+        </video>
+      )}
+      <div className="slide-info" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+        <motion.div 
+          className="feature-icon"
+          style={{ 
+            color: feature.color,
+            width: 'clamp(80px, 18vh, 120px)',
+            height: 'clamp(80px, 18vh, 120px)',
+            display: 'grid',
+            placeItems: 'center',
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '50%',
+            margin: '0 auto',
+            transform: 'translateY(-60px)',
+            zIndex: 5,
+            position: 'relative'
+          }}
+          animate={{ 
+            boxShadow: [
+              `0 0 20px ${feature.color}`, 
+              `0 0 40px ${feature.color}`, 
+              `0 0 20px ${feature.color}`
+            ] 
+          }}
+          transition={{ repeat: Infinity, duration: 2 }}
+        >
+          {iconMap[feature.icon]}
+        </motion.div>
+        <h3 className="slide-subtitle" style={{ color: feature.color }}>
+          {feature.subtitle}
+        </h3>
+        <h2 className="slide-title" data-text={feature.title}>
+          {feature.title}
+        </h2>
+        <p className="slide-description">
+          {feature.description}
+        </p>
+        <Link to="/register" className="cta-btn" style={{ borderColor: feature.color, color: feature.color }}>
+          SECURE_YOUR_PROJECT
+        </Link>
+      </div>
+    </div>
+  );
+};
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
   const isAuthenticated = !!localStorage.getItem('access_token');
 
+  // Sync slide transition with 10s video cycle
   useEffect(() => {
     const timer = setInterval(() => {
       handleNext();
-    }, 11000);
+    }, 10000);
     return () => clearInterval(timer);
   }, [currentSlide]);
 
@@ -144,48 +222,9 @@ const Home = () => {
             animate={{ opacity: 1, x: 0, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, x: -100, scale: 1.1, filter: 'blur(10px)' }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="slide-content"
+            style={{ width: '100%', height: '100%' }}
           >
-            <div className="slide-info" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-              <motion.div 
-                className="feature-icon"
-                style={{ 
-                  color: features[currentSlide].color,
-                  width: 'clamp(80px, 18vh, 120px)',
-                  height: 'clamp(80px, 18vh, 120px)',
-                  display: 'grid',
-                  placeItems: 'center',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  borderRadius: '50%',
-                  margin: '0 auto',
-                  transform: 'translateY(-60px)',
-                  zIndex: 5,
-                  position: 'relative'
-                }}
-                animate={{ 
-                  boxShadow: [
-                    `0 0 20px ${features[currentSlide].color}`, 
-                    `0 0 40px ${features[currentSlide].color}`, 
-                    `0 0 20px ${features[currentSlide].color}`
-                  ] 
-                }}
-                transition={{ repeat: Infinity, duration: 2 }}
-              >
-                {iconMap[features[currentSlide].icon]}
-              </motion.div>
-              <h3 className="slide-subtitle" style={{ color: features[currentSlide].color }}>
-                {features[currentSlide].subtitle}
-              </h3>
-              <h2 className="slide-title" data-text={features[currentSlide].title}>
-                {features[currentSlide].title}
-              </h2>
-              <p className="slide-description">
-                {features[currentSlide].description}
-              </p>
-              <Link to="/register" className="cta-btn" style={{ borderColor: features[currentSlide].color, color: features[currentSlide].color }}>
-                SECURE_YOUR_PROJECT
-              </Link>
-            </div>
+            <FeatureSlide feature={features[currentSlide]} />
           </motion.div>
         </AnimatePresence>
 

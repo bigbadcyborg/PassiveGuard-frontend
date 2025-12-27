@@ -123,21 +123,49 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 100px;
+  padding: 0;
   position: relative;
   overflow: hidden;
 }
 
 .slide-content {
-  max-width: 800px;
   text-align: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slide-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.3;
+  filter: saturate(1.2) contrast(1.1) brightness(0.8);
+  pointer-events: none;
+  animation: cinematic-zoom 10s linear infinite;
+}
+
+@keyframes cinematic-zoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
 }
 
 .slide-info {
+  max-width: 800px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
+  z-index: 5;
+  padding: 0 20px;
 }
 
 .feature-icon {
