@@ -31,6 +31,7 @@ function Navbar() {
             <>
               <Link to="/" className="navbar-link">Dashboard</Link>
               <Link to="/scans" className="navbar-link">Scans</Link>
+              <Link to="/agents" className="navbar-link">Agents</Link>
               <Link to="/pricing" className="navbar-link">Pricing</Link>
               <Link to="/blog" className="navbar-link">Blog</Link>
               {user.role === 'admin' && (
@@ -39,7 +40,9 @@ function Navbar() {
                   <Link to="/admin/traffic" className="navbar-link" style={{ color: 'var(--neon-purple)' }}>Traffic</Link>
                 </>
               )}
-              <span className="navbar-user">{user.username} ({user.role})</span>
+              <span className="navbar-user" style={{ color: user.role === 'admin' ? 'var(--neon-pink)' : 'var(--neon-blue)' }}>
+                {user.username} [{user.role.toUpperCase()}]
+              </span>
               <button onClick={handleLogout} className="navbar-link navbar-logout">
                 Logout
               </button>

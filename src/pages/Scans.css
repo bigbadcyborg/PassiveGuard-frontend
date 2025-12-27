@@ -85,15 +85,76 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+  position: relative;
 }
 
 .folder-picker h3 {
-  margin-top: 0;
-  margin-bottom: 25px;
+  margin: 0;
   color: var(--neon-cyan);
   text-transform: uppercase;
   letter-spacing: 2px;
-  font-size: 20px;
+  font-size: 18px;
+}
+
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.picker-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  line-height: 1;
+  padding: 0;
+  z-index: 10;
+}
+
+.picker-close-btn:hover {
+  color: var(--text-primary);
+  background: var(--neon-cyan);
+  box-shadow: 0 0 15px var(--neon-cyan);
+  transform: scale(1.1) rotate(90deg);
+}
+
+.picker-toggle {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  padding: 3px;
+}
+
+.btn-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-toggle.active {
+  background: var(--neon-cyan);
+  color: var(--bg-primary);
+  box-shadow: 0 0 10px var(--neon-cyan);
 }
 
 .picker-path {
@@ -117,6 +178,18 @@
   background: rgba(0, 0, 0, 0.2);
 }
 
+.picker-section-header {
+  padding: 10px 20px;
+  background: rgba(0, 243, 255, 0.1);
+  color: var(--neon-cyan);
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+  font-family: 'Courier New', monospace;
+}
+
 .picker-item {
   padding: 12px 20px;
   cursor: pointer;
@@ -136,6 +209,27 @@
   font-weight: bold;
   color: var(--neon-cyan);
   background: rgba(0, 243, 255, 0.02);
+}
+
+.picker-item.picker-directory {
+  cursor: pointer;
+}
+
+.picker-item.picker-directory:hover {
+  background-color: rgba(0, 243, 255, 0.1);
+  padding-left: 25px;
+}
+
+.picker-item.picker-file {
+  cursor: default;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.picker-item.picker-file:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--text-secondary);
+  padding-left: 20px;
 }
 
 .picker-empty {

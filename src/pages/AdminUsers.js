@@ -27,6 +27,19 @@ function AdminUsers() {
     }
   };
 
+  const handleUpdateRole = async (userId, newRole) => {
+    try {
+      const token = localStorage.getItem('access_token');
+      await axios.put(`/api/admin/users/${userId}/role`, 
+        { role: newRole },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      fetchUsers(); // Refresh the list
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to update user role');
+    }
+  };
+
   if (loading) return <div className="spinner" />;
 
   return (
@@ -60,16 +73,59 @@ function AdminUsers() {
                   <td style={{ color: 'var(--neon-cyan)', fontWeight: 'bold' }}>{user.username}</td>
                   <td>{user.email}</td>
                   <td>
-                    <span className={`status-badge ${user.role === 'admin' ? 'status-failed' : 'status-completed'}`}>
+                    <span className={`status-badge role-${user.role}`}>
                       {user.role}
                     </span>
                   </td>
                   <td style={{ textAlign: 'center' }}>{user.scan_count}</td>
                   <td>{new Date(user.created_at).toLocaleDateString()}</td>
                   <td>
-                    <Link to={`/admin/users/${user.id}`} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px' }}>
-                      Inspect
-                    </Link>
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                      <Link to={`/admin/users/${user.id}`} className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '11px' }}>
+                        Inspect
+                      </Link>
+                      
+                      {user.role !== 'admin' && (
+                        <>
+                          {user.role === 'sentinel' && (
+                            <button 
+                              onClick={() => handleUpdateRole(user.id, 'overdrive')}
+                              className="btn btn-primary" 
+                              style={{ padding: '4px 8px', fontSize: '11px', borderColor: 'var(--neon-purple)', color: 'var(--neon-purple)', background: 'transparent' }}
+                            >
+                              + Overdrive
+                            </button>
+                          )}
+                          {user.role === 'overdrive' && (
+                            <div style={{ display: 'flex', gap: '5px' }}>
+                              <button 
+                                onClick={() => handleUpdateRole(user.id, 'sentinel')}
+                                className="btn btn-primary" 
+                                style={{ padding: '4px 8px', fontSize: '11px', borderColor: 'var(--neon-blue)', color: 'var(--neon-blue)', background: 'transparent' }}
+                              >
+                                - Sentinel
+                              </button>
+                              <button 
+                                onClick={() => handleUpdateRole(user.id, 'nexus')}
+                                className="btn btn-primary" 
+                                style={{ padding: '4px 8px', fontSize: '11px', borderColor: 'var(--neon-yellow)', color: 'var(--neon-yellow)', background: 'transparent' }}
+                              >
+                                + Nexus
+                              </button>
+                            </div>
+                          )}
+                          {user.role === 'nexus' && (
+                            <button 
+                              onClick={() => handleUpdateRole(user.id, 'overdrive')}
+                              className="btn btn-primary" 
+                              style={{ padding: '4px 8px', fontSize: '11px', borderColor: 'var(--neon-purple)', color: 'var(--neon-purple)', background: 'transparent' }}
+                            >
+                              - Overdrive
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

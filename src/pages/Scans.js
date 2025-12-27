@@ -57,19 +57,26 @@ function Scans() {
   const [filters, setFilters] = useState({
     severity: '',
   });
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const isSentinel = user.role === 'sentinel';
+  console.log("Scans component initialized", { username: user.username, role: user.role, isSentinel });
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [formData, setFormData] = useState({
     name: '',
     target_path: '',
     scan_type: 'full',
+    scan_location: isSentinel ? 'agent' : 'hub'
   });
-  const navigate = useNavigate();
-  const location = useLocation();
 
   // Folder Picker State
   const [showPicker, setShowPicker] = useState(false);
   const [pickerPath, setPickerPath] = useState('/app/projects');
-  const [pickerItems, setPickerItems] = useState({ current: '/app/projects', parent: null, directories: [] });
+  const [pickerItems, setPickerItems] = useState({ current: '/app/projects', parent: null, directories: [], files: [], is_agent: false });
   const [pickerLoading, setPickerLoading] = useState(false);
+  const [browseTarget, setBrowseTarget] = useState(isSentinel ? 'agent' : 'hub'); // Default to agent if Sentinel
 
   useEffect(() => {
     loadScans();
@@ -139,23 +146,56 @@ function Scans() {
     }
   };
 
-  const loadPickerData = async (path) => {
+  const loadPickerData = async (path, target = browseTarget) => {
     setPickerLoading(true);
+    console.log("Fetching directory list", { path, target, isSentinel });
     try {
-      const response = await utilsAPI.ls(path);
-      setPickerItems(response.data);
-      setPickerPath(response.data.current);
+      const useAgent = target === 'agent' || isSentinel;
+      const response = await utilsAPI.ls(path, useAgent);
+      console.log("Directory list response received", response.data);
+      console.log("Directories:", response.data.directories);
+      console.log("Files:", response.data.files);
+      // Ensure files array exists, default to empty array if missing
+      const pickerData = {
+        ...response.data,
+        directories: response.data.directories || [],
+        files: response.data.files || []
+      };
+      setPickerItems(pickerData);
+      setPickerPath(pickerData.current);
+      setBrowseTarget(pickerData.is_agent ? 'agent' : 'hub');
     } catch (error) {
       console.error('Error loading directory:', error);
-      alert('Could not read directory');
+      const errorMessage = error.response?.data?.error || 'Could not read directory';
+      const errorCode = error.response?.data?.error_code;
+      
+      // Special handling for Sentinel users when no agent is connected
+      if (isSentinel && (errorCode === 'NO_AGENT_CONNECTED' || errorMessage.includes('No edge agent connected'))) {
+        const shouldNavigate = window.confirm(
+          `${errorMessage}\n\nWould you like to go to the Edge Agents page to set one up?`
+        );
+        if (shouldNavigate) {
+          navigate('/agents');
+        }
+      } else {
+        alert(errorMessage);
+      }
     } finally {
       setPickerLoading(false);
     }
   };
 
   const handleBrowse = () => {
+    console.log("handleBrowse triggered", { role: user.role, isSentinel, scan_location: formData.scan_location });
     setShowPicker(true);
-    loadPickerData(formData.target_path || '/app/projects');
+    // Use the explicitly selected scan_location as the starting point for browsing
+    const initialTarget = formData.scan_location;
+    setBrowseTarget(initialTarget);
+    
+    // Default path for hub is /app/projects, default for agent is empty (which resolves to its root)
+    const defaultPath = initialTarget === 'hub' ? '/app/projects' : '';
+    console.log("Loading picker data", { path: formData.target_path || defaultPath, initialTarget });
+    loadPickerData(formData.target_path || defaultPath, initialTarget);
   };
 
   const selectFolder = (dir) => {
@@ -179,7 +219,7 @@ function Scans() {
     setIsSubmitting(true);
     try {
       const response = await scansAPI.create(formData);
-      setFormData({ name: '', target_path: '', scan_type: 'full' });
+      setFormData({ name: '', target_path: '', scan_type: 'full', scan_location: isSentinel ? 'agent' : 'hub' });
       setShowForm(false);
       
       // Automatically navigate to the new scan's detail page
@@ -192,7 +232,15 @@ function Scans() {
     } catch (error) {
       console.error('Error creating scan:', error);
       const errorMessage = error.response?.data?.error || error.message || 'Error creating scan. Please check the target path exists.';
-      alert(errorMessage);
+      
+      if (errorMessage.includes('Sentinel users must use edge agents')) {
+        if (window.confirm(`${errorMessage}\n\nWould you like to go to the Edge Agents page to set one up?`)) {
+          navigate('/agents');
+        }
+      } else {
+        alert(errorMessage);
+      }
+      
       setIsSubmitting(false);
     }
   };
@@ -244,6 +292,25 @@ function Scans() {
               />
             </div>
             <div className="form-group">
+              <label className="form-label">Scan Execution</label>
+              <select
+                className="form-select"
+                value={formData.scan_location}
+                onChange={(e) => setFormData({ ...formData, scan_location: e.target.value })}
+                disabled={isSentinel}
+              >
+                <option value="agent">Edge Agent (Local Scanning)</option>
+                {!isSentinel && <option value="hub">Hub (Cloud Scanning)</option>}
+              </select>
+              <small style={{ color: 'var(--text-secondary)', marginTop: '5px', display: 'block' }}>
+                {formData.scan_location === 'agent' 
+                  ? "Scan will run on your local machine via the Edge Agent. Your source code stays local." 
+                  : "Scan will run on the PassiveGuard server."}
+                {isSentinel && " (Sentinel tier is restricted to Edge Agent scans)"}
+              </small>
+            </div>
+
+            <div className="form-group">
               <label className="form-label">Target Path</label>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <input
@@ -263,7 +330,32 @@ function Scans() {
             {showPicker && (
               <div className="modal-overlay">
                 <div className="modal-content folder-picker">
-                  <h3>Select Target Directory</h3>
+                  <button 
+                    className="picker-close-btn" 
+                    onClick={() => setShowPicker(false)}
+                    aria-label="Close file explorer"
+                  >
+                    ×
+                  </button>
+                  <div className="picker-header">
+                    <h3>Select Target Directory {pickerItems.is_agent ? '(Edge Agent)' : '(Hub)'}</h3>
+                    {!isSentinel && (
+                      <div className="picker-toggle">
+                        <button 
+                          className={`btn-toggle ${browseTarget === 'hub' ? 'active' : ''}`}
+                          onClick={() => loadPickerData('/app/projects', 'hub')}
+                        >
+                          HUB_FS
+                        </button>
+                        <button 
+                          className={`btn-toggle ${browseTarget === 'agent' ? 'active' : ''}`}
+                          onClick={() => loadPickerData('/app/projects', 'agent')}
+                        >
+                          AGENT_FS
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   <div className="picker-path">
                     <strong>Current:</strong> {pickerItems.current}
                   </div>
@@ -276,14 +368,31 @@ function Scans() {
                     {pickerLoading ? (
                       <div className="spinner-small"></div>
                     ) : (
-                      pickerItems.directories.map(dir => (
-                        <div key={dir} className="picker-item" onClick={() => selectFolder(dir)}>
-                          📁 {dir}
-                        </div>
-                      ))
-                    )}
-                    {!pickerLoading && pickerItems.directories.length === 0 && (
-                      <div className="picker-empty">No subdirectories found</div>
+                      <>
+                        {pickerItems.directories && pickerItems.directories.length > 0 && (
+                          <>
+                            <div className="picker-section-header">📁 Directories</div>
+                            {pickerItems.directories.map(dir => (
+                              <div key={dir} className="picker-item picker-directory" onClick={() => selectFolder(dir)}>
+                                📁 {dir}
+                              </div>
+                            ))}
+                          </>
+                        )}
+                        {pickerItems.files && pickerItems.files.length > 0 && (
+                          <>
+                            <div className="picker-section-header">📄 Files</div>
+                            {pickerItems.files.map(file => (
+                              <div key={file} className="picker-item picker-file">
+                                📄 {file}
+                              </div>
+                            ))}
+                          </>
+                        )}
+                        {!pickerLoading && (!pickerItems.directories || pickerItems.directories.length === 0) && (!pickerItems.files || pickerItems.files.length === 0) && (
+                          <div className="picker-empty">No files or directories found</div>
+                        )}
+                      </>
                     )}
                   </div>
                   <div className="modal-actions">

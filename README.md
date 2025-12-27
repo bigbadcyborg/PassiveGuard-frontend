@@ -42,10 +42,32 @@ PassiveGuard is built with a **Cyber-Security First** aesthetic:
 
 ---
 
+## Edge Agents & Privacy-Preserving Scanning
+
+PassiveGuard supports distributed Edge Agents for privacy-preserving local scanning:
+
+- **Edge Agent Page**: 
+  - Live connection status monitoring
+  - Visual directory selector with file browser
+  - Platform-specific Docker command generator (Windows/Linux-WSL)
+  - Automatic path conversion for cross-platform compatibility
+  - "Tell Me More" expandable information section
+- **File Browser**: Visual directory navigation showing files and directories
+- **Real-Time Updates**: Socket.IO-based connection monitoring
+
+## User Tiers
+
+PassiveGuard uses a three-tier system:
+
+- **Sentinel** (Free): Must use Edge Agents for all scans - source code never leaves your machine
+- **Overdrive** (Premium): Can use Hub-based remote scanning or Edge Agents
+- **Nexus** (Enterprise): Full access including remote scanning and Edge Agents
+
 ## Advanced Admin Capabilities
 For enterprise users, PassiveGuard includes robust administration tools:
-- **User Management**: Detailed control over user access and roles.
-- **Traffic Monitoring**: Global view of network traffic and potential anomalies.
+- **User Management**: Promote/demote users between tiers (Sentinel, Overdrive, Nexus)
+- **Role Modification**: Change user roles and permissions
+- **Traffic Monitoring**: Global view of network traffic and potential anomalies
 
 ---
 
@@ -63,9 +85,9 @@ The PassiveGuard frontend is a robust Single Page Application (SPA) built with:
 
 ## Pricing & Plans
 PassiveGuard offers flexible pricing to suit your needs:
-- **Free Tier**: Basic scanning for individual developers.
-- **Pro Tier**: Advanced taint tracking and SBOM generation.
-- **Enterprise Tier**: Dedicated support, custom rules, and full network traffic analysis.
+- **Sentinel** (Free): Edge Agent-based scanning - privacy-focused, code never leaves your machine
+- **Overdrive** (Premium): Hub-based remote scanning or Edge Agents - full feature access
+- **Nexus** (Enterprise): Full access including remote scanning and Edge Agents - advanced features and priority support
 
 ---
 

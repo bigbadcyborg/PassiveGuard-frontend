@@ -9,6 +9,8 @@ function AdminUserDetail() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [updating, setUpdating] = useState(false);
+  const [selectedRole, setSelectedRole] = useState('');
 
   useEffect(() => {
     fetchUserDetail();
@@ -21,10 +23,28 @@ function AdminUserDetail() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setData(response.data);
+      setSelectedRole(response.data.user.role);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to fetch user details');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdateRole = async () => {
+    setUpdating(true);
+    try {
+      const token = localStorage.getItem('access_token');
+      await axios.put(`/api/admin/users/${userId}/role`, 
+        { role: selectedRole },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      await fetchUserDetail();
+      alert('User role updated successfully');
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to update user role');
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -41,7 +61,7 @@ function AdminUserDetail() {
           <Link to="/admin/users" className="btn btn-secondary" style={{ padding: '8px 15px' }}>&lt; BACK</Link>
           <h1>INSPECT: {user.username}</h1>
         </div>
-        <div className={`status-badge ${user.role === 'admin' ? 'status-failed' : 'status-completed'}`}>
+        <div className={`status-badge role-${user.role}`}>
           ROLE: {user.role}
         </div>
       </div>
@@ -54,6 +74,32 @@ function AdminUserDetail() {
             <p><strong>USERNAME:</strong> {user.username}</p>
             <p><strong>EMAIL:</strong> {user.email}</p>
             <p><strong>JOINED:</strong> {new Date(user.created_at).toLocaleString()}</p>
+            
+            {user.role !== 'admin' && (
+              <div className="role-management" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid var(--glass-border)' }}>
+                <p><strong>MANAGE_ROLE:</strong></p>
+                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                  <select 
+                    value={selectedRole} 
+                    onChange={(e) => setSelectedRole(e.target.value)}
+                    className="form-input"
+                    style={{ flex: 1, background: 'rgba(0,0,0,0.5)', color: 'white', border: '1px solid var(--glass-border)', padding: '5px' }}
+                  >
+                    <option value="sentinel">Sentinel</option>
+                    <option value="overdrive">Overdrive</option>
+                    <option value="nexus">Nexus</option>
+                  </select>
+                  <button 
+                    onClick={handleUpdateRole} 
+                    disabled={updating || selectedRole === user.role}
+                    className="btn btn-primary"
+                    style={{ padding: '5px 15px' }}
+                  >
+                    {updating ? 'UPDATING...' : 'UPDATE'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

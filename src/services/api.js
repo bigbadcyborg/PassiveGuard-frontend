@@ -67,7 +67,19 @@ export const statsAPI = {
 };
 
 export const utilsAPI = {
-  ls: (path) => api.get(`/utils/ls?path=${encodeURIComponent(path || '')}`),
+  ls: (path, useAgent = false, allowHubBrowse = false) => {
+    const params = new URLSearchParams();
+    params.append('path', path || '');
+    params.append('use_agent', useAgent);
+    if (allowHubBrowse) {
+      params.append('allow_hub_browse', 'true');
+    }
+    return api.get(`/utils/ls?${params.toString()}`);
+  },
+};
+
+export const debugAPI = {
+  getAgents: () => api.get('/debug/agents'),
 };
 
 export default api;

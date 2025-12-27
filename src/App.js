@@ -13,6 +13,8 @@ import AdminUserDetail from './pages/AdminUserDetail';
 import AdminTraffic from './pages/AdminTraffic';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import Agents from './pages/Agents';
+import DebugAgents from './pages/DebugAgents';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -54,6 +56,22 @@ function MainContent({ isAuthenticated }) {
           element={
             <PrivateRoute>
               <Scans />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/agents"
+          element={
+            <PrivateRoute>
+              <Agents />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/debug/agents"
+          element={
+            <PrivateRoute>
+              <DebugAgents />
             </PrivateRoute>
           }
         />
