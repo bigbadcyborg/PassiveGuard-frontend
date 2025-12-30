@@ -371,7 +371,6 @@ function Scans() {
                       <>
                         {pickerItems.directories && pickerItems.directories.length > 0 && (
                           <>
-                            <div className="picker-section-header">📁 Directories</div>
                             {pickerItems.directories.map(dir => (
                               <div key={dir} className="picker-item picker-directory" onClick={() => selectFolder(dir)}>
                                 📁 {dir}
@@ -381,7 +380,6 @@ function Scans() {
                         )}
                         {pickerItems.files && pickerItems.files.length > 0 && (
                           <>
-                            <div className="picker-section-header">📄 Files</div>
                             {pickerItems.files.map(file => (
                               <div key={file} className="picker-item picker-file">
                                 📄 {file}

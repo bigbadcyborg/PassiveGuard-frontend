@@ -35,7 +35,7 @@ const PRICING_TIERS = [
     ],
     buttonText: 'Upgrade Now',
     highlight: true,
-    badge: 'MOST POPULAR',
+    badge: '  MOST POPULAR',
     color: 'pink'
   },
   {
@@ -70,7 +70,7 @@ const PRICING_TIERS = [
     ],
     buttonText: 'Buy App',
     highlight: false,
-    badge: 'BEST VALUE',
+    badge: ' BEST VALUE',
     color: 'yellow'
   }
 ];

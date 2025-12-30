@@ -158,6 +158,13 @@ function Agents() {
 
   const dockerCommand = getDockerCommand();
 
+  // Generate Docker build command
+  const getDockerBuildCommand = () => {
+    return 'docker build --target agent -t passiveguard-agent .';
+  };
+
+  const dockerBuildCommand = getDockerBuildCommand();
+
   // Check if current user has a connected agent
   const hasConnectedAgent = agentStatus?.connected_agents?.some(
     agent => agent.agent_key === agentStatus?.current_user?.agent_key
@@ -260,6 +267,24 @@ function Agents() {
                   <p className="no-agents-hint">Start your edge agent using the Docker command below to establish a connection.</p>
                 </div>
               )}
+
+              {hasConnectedAgent && (
+                <div className="remove-agent-section">
+                  <h3>Remove Agent</h3>
+                  <p className="card-description" style={{ marginTop: '10px', marginBottom: '15px' }}>
+                    To disconnect and remove your agent container, run the following command in your terminal:
+                  </p>
+                  <div className="command-display">
+                    <pre className="docker-command">docker rm -f pg-edge-agent</pre>
+                    <button onClick={() => copyToClipboard('docker rm -f pg-edge-agent')} className="copy-btn">
+                      COPY_COMMAND
+                    </button>
+                  </div>
+                  <p className="card-note" style={{ marginTop: '10px' }}>
+                    💡 Note: If you get an error that the container name is already in use when trying to set up a new agent, remove the existing container first using the command above, then run your new agent setup command.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </section>
@@ -273,9 +298,113 @@ function Agents() {
                 : "To move the heavy scanning workload to your local environment and keep your source code private, run the PassiveGuard Edge Agent as a Docker container."}
             </p>
 
+          {/* Step 01: Install Docker */}
           <div className="setup-card">
             <div className="card-header">
               <span className="step-number">01</span>
+              <h3>Install Docker</h3>
+              <div className="platform-toggle">
+                <button 
+                  className={osPlatform === 'windows' ? 'active' : ''} 
+                  onClick={() => setOsPlatform('windows')}
+                >
+                  WINDOWS
+                </button>
+                <button 
+                  className={osPlatform === 'linux' ? 'active' : ''} 
+                  onClick={() => setOsPlatform('linux')}
+                >
+                  LINUX / WSL
+                </button>
+              </div>
+            </div>
+            <div className="installation-instructions">
+              {osPlatform === 'windows' ? (
+                <div>
+                  <p className="card-description">
+                    Docker Desktop for Windows provides an easy-to-use GUI for managing containers.
+                  </p>
+                  <ol className="instruction-list">
+                    <li>Download Docker Desktop from <a href="https://www.docker.com/products/docker-desktop" target="_blank" rel="noopener noreferrer" className="instruction-link">docker.com/products/docker-desktop</a></li>
+                    <li>Run the installer and follow the setup wizard</li>
+                    <li>Restart your computer if prompted</li>
+                    <li>Launch Docker Desktop and wait for it to start (Docker icon in system tray)</li>
+                    <li>Verify installation: Open PowerShell or WSL and run <code className="inline-code">docker --version</code></li>
+                  </ol>
+                  <p className="card-note">
+                    💡 Note: If you're using WSL, Docker Desktop will automatically integrate with your WSL distribution.
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p className="card-description">
+                    Install Docker Engine on your Linux system or WSL distribution.
+                  </p>
+                  <div className="instruction-block">
+                    <p className="instruction-subtitle"><strong>Ubuntu/Debian:</strong></p>
+                    <div className="command-display">
+                      <pre className="docker-command">{`# Update package index
+sudo apt-get update
+
+# Install prerequisites
+sudo apt-get install ca-certificates curl gnupg lsb-release
+
+# Add Docker's official GPG key
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# Set up the repository
+echo \\
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \\
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker Engine
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Add your user to the docker group (optional, to run docker without sudo)
+sudo usermod -aG docker $USER
+# Log out and back in for this to take effect`}</pre>
+                    </div>
+                  </div>
+                  <div className="instruction-block">
+                    <p className="instruction-subtitle"><strong>Other distributions:</strong></p>
+                    <p className="card-description">
+                      Visit <a href="https://docs.docker.com/engine/install/" target="_blank" rel="noopener noreferrer" className="instruction-link">docs.docker.com/engine/install</a> for installation instructions for your specific Linux distribution.
+                    </p>
+                  </div>
+                  <p className="card-note">
+                    💡 Note: After installation, verify with <code className="inline-code">docker --version</code>
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Step 02: Build Agent Image */}
+          <div className="setup-card">
+            <div className="card-header">
+              <span className="step-number">02</span>
+              <h3>Build Agent Image</h3>
+            </div>
+            <p className="card-description">
+              Before running the agent, you need to build the Docker image. Navigate to the PassiveGuard project root directory (where the Dockerfile is located) and run the build command below.
+            </p>
+            <div className="command-display">
+              <pre className="docker-command">{dockerBuildCommand}</pre>
+              <button onClick={() => copyToClipboard(dockerBuildCommand)} className="copy-btn">
+                COPY_COMMAND
+              </button>
+            </div>
+            <p className="card-note">
+              💡 This builds the IP-protected Edge Agent image. The build process may take a few minutes on first run.
+            </p>
+          </div>
+
+          {/* Step 03: Run Agent via Docker */}
+          <div className="setup-card">
+            <div className="card-header">
+              <span className="step-number">03</span>
               <h3>Run Agent via Docker</h3>
               <div className="platform-toggle">
                 <button 
@@ -292,6 +421,9 @@ function Agents() {
                 </button>
               </div>
             </div>
+            <p className="card-note" style={{marginTop: 0, marginBottom: '15px'}}>
+              ⚠️ Make sure you've completed Steps 01 and 02 before proceeding.
+            </p>
             <div className="directory-selector">
               <label className="directory-label">
                 <span>📁 Directory Path</span>
@@ -501,7 +633,6 @@ function Agents() {
                 <>
                   {pickerItems.directories && pickerItems.directories.length > 0 && (
                     <>
-                      <div className="picker-section-header">📁 Directories</div>
                       {pickerItems.directories.map(dir => (
                         <div key={dir} className="picker-item picker-directory" onClick={() => selectDirectory(dir)}>
                           📁 {dir}
@@ -511,7 +642,6 @@ function Agents() {
                   )}
                   {pickerItems.files && pickerItems.files.length > 0 && (
                     <>
-                      <div className="picker-section-header">📄 Files</div>
                       {pickerItems.files.map(file => (
                         <div key={file} className="picker-item picker-file">
                           📄 {file}

@@ -403,6 +403,58 @@ h2 {
   color: var(--neon-yellow);
 }
 
+/* Installation Instructions */
+.installation-instructions {
+  margin-top: 15px;
+}
+
+.instruction-list {
+  margin: 15px 0;
+  padding-left: 25px;
+  color: var(--text-primary);
+  line-height: 1.8;
+}
+
+.instruction-list li {
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.instruction-list code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--neon-yellow);
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+}
+
+.instruction-link {
+  color: var(--neon-cyan);
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.instruction-link:hover {
+  color: var(--neon-green);
+}
+
+.instruction-block {
+  margin: 20px 0;
+}
+
+.instruction-subtitle {
+  color: var(--neon-cyan);
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.instruction-subtitle strong {
+  color: var(--neon-cyan);
+}
+
 /* Directory Selector */
 .directory-selector {
   margin-bottom: 20px;
@@ -784,6 +836,20 @@ h2 {
   color: var(--neon-yellow);
   font-size: 12px;
   font-style: italic;
+}
+
+.remove-agent-section {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.remove-agent-section h3 {
+  color: var(--neon-cyan);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
 }
 
 /* Agent Connected Message */
