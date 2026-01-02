@@ -376,7 +376,7 @@ function Pricing() {
           className="btn-link" 
           onClick={() => setShowComparison(!showComparison)}
         >
-          {showComparison ? 'CLOSE_PROTOCOL_COMPARISON' : 'INITIALIZE_DETAILED_COMPARISON'}
+          {showComparison ? 'CLOSE PROTOCOL COMPARISON' : 'INITIALIZE DETAILED COMPARISON'}
           <span className="arrow">{showComparison ? '▲' : '▼'}</span>
         </button>
       </div>
@@ -422,7 +422,7 @@ function Pricing() {
       )}
 
       <div className="faq-section">
-        <h2 className="section-title text-cyan">FREQUENTLY_ASKED_QUESTIONS</h2>
+        <h2 className="section-title text-cyan">FREQUENTLY ASKED QUESTIONS</h2>
         <div className="faq-grid">
           {FAQ_ITEMS.map((item, index) => (
             <div 
@@ -451,15 +451,15 @@ function Pricing() {
       <div className="trust-indicators">
         <div className="trust-item">
           <span className="trust-icon">🛡️</span>
-          <span className="trust-text">SECURE_PAYMENT_GATEWAY</span>
+          <span className="trust-text">SECURE PAYMENT GATEWAY</span>
         </div>
         <div className="trust-item">
           <span className="trust-icon">🔒</span>
-          <span className="trust-text">END_TO_END_ENCRYPTION</span>
+          <span className="trust-text">END TO END ENCRYPTION</span>
         </div>
         <div className="trust-item">
           <span className="trust-icon">⚡</span>
-          <span className="trust-text">99.9%_UPTIME_SLA</span>
+          <span className="trust-text">99.9% UPTIME SLA</span>
         </div>
       </div>
 

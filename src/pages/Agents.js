@@ -14,6 +14,7 @@ function Agents() {
   const [warningClosed, setWarningClosed] = useState(false);
   const [selectedDirectory, setSelectedDirectory] = useState('');
   const [showDirectoryPicker, setShowDirectoryPicker] = useState(false);
+  const [scanSourceType, setScanSourceType] = useState('local'); // 'local' or 'repo'
   const [pickerItems, setPickerItems] = useState({ current: '/app/projects', parent: null, directories: [], files: [], is_agent: false });
   const [pickerLoading, setPickerLoading] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
@@ -137,6 +138,15 @@ function Agents() {
 
   // Generate Docker command with selected directory
   const getDockerCommand = () => {
+    // If scanning a repo, we don't need to mount a volume for source code
+    if (scanSourceType === 'repo') {
+      if (osPlatform === 'windows') {
+        return `docker run -d -e HUB_URL="${hubUrl}" -e AGENT_KEY="${agentKey || 'YOUR_AGENT_KEY'}" --name pg-edge-agent passiveguard-agent`;
+      } else {
+        return `docker run -d --add-host=host.docker.internal:host-gateway -e HUB_URL="${hubUrl}" -e AGENT_KEY="${agentKey || 'YOUR_AGENT_KEY'}" --name pg-edge-agent passiveguard-agent`;
+      }
+    }
+
     const pathToUse = selectedDirectory || 'path/to/your/code';
     let volumePath;
     
@@ -427,9 +437,30 @@ sudo usermod -aG docker $USER
                 </button>
               </div>
             </div>
+
+            <div className="source-type-selector" style={{ marginBottom: '20px', padding: '0 20px' }}>
+                <label className="directory-label" style={{ display: 'block', marginBottom: '10px' }}>Select Scan Source:</label>
+                <div className="platform-toggle" style={{ display: 'inline-flex' }}>
+                    <button 
+                        className={scanSourceType === 'local' ? 'active' : ''} 
+                        onClick={() => setScanSourceType('local')}
+                    >
+                        LOCAL CODEBASE
+                    </button>
+                    <button 
+                        className={scanSourceType === 'repo' ? 'active' : ''} 
+                        onClick={() => setScanSourceType('repo')}
+                    >
+                        PUBLIC REPOSITORY
+                    </button>
+                </div>
+            </div>
+
             <p className="card-note" style={{marginTop: 0, marginBottom: '15px'}}>
               ⚠️ Make sure you've completed Steps 01 and 02 before proceeding.
             </p>
+
+            {scanSourceType === 'local' ? (
             <div className="directory-selector">
               <label className="directory-label">
                 <span>📁 Directory Path</span>
@@ -476,15 +507,27 @@ sudo usermod -aG docker $USER
                 </div>
               )}
             </div>
-            {!selectedDirectory && (
+            ) : (
+                <div className="repo-instructions" style={{ padding: '0 20px', marginBottom: '20px' }}>
+                    <p className="card-description">
+                        When scanning a public repository, the agent will clone the code directly. 
+                        <strong>No local volume mount is required.</strong>
+                    </p>
+                    <p className="card-description">
+                        Simply run the command below. You will enter the Repository URL when creating a new scan.
+                    </p>
+                </div>
+            )}
+
+            {!selectedDirectory && scanSourceType === 'local' && (
               <p className="card-description">
                 Select a directory path above to generate your Docker command.
               </p>
             )}
-            {selectedDirectory && (
+            {(selectedDirectory || scanSourceType === 'repo') && (
               <>
                 <p className="card-description">
-                  The Docker command below is ready to use with your selected directory.
+                  The Docker command below is ready to use.
                 </p>
                 <div className="command-display">
                   <pre className="docker-command">{dockerCommand}</pre>
