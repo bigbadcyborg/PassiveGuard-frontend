@@ -207,7 +207,7 @@ function Agents() {
             >
               ×
             </button>
-            <span className="notice-icon">⚠️</span>
+            <span className="notice-icon">[!]</span>
             <div className="notice-text">
               <h3>Sentinel Tier: Edge Agent Required</h3>
               <p>As a Sentinel user, all scans must be performed via an Edge Agent on your local machine. Hub-based remote scanning is available for Overdrive and Nexus tiers.</p>
@@ -224,9 +224,12 @@ function Agents() {
         <section className="agent-status-live-section">
           <div className="status-header">
             <h2>Agent Connection Status</h2>
-            <span className="status-indicator">
-              {statusLoading ? '⏳' : agentStatus?.connected_agents?.length > 0 ? '🟢' : '🔴'}
-            </span>
+            <div className="status-wrapper">
+              <span className={`status-dot ${statusLoading ? 'loading' : agentStatus?.connected_agents?.length > 0 ? 'online' : 'offline'}`}></span>
+              <span className="status-text">
+                {statusLoading ? '[LOADING]' : agentStatus?.connected_agents?.length > 0 ? '[ONLINE]' : '[OFFLINE]'}
+              </span>
+            </div>
           </div>
           
           {statusLoading ? (
@@ -255,7 +258,7 @@ function Agents() {
                     return (
                       <div key={idx} className={`agent-connection-item ${isMyAgent ? 'my-agent' : ''}`}>
                         <div className="connection-header">
-                          <span className="connection-status">🟢 CONNECTED</span>
+                          <span className="connection-status">[ONLINE] CONNECTED</span>
                           {isMyAgent && <span className="my-agent-badge">YOUR AGENT</span>}
                         </div>
                         <div className="connection-details">
@@ -278,7 +281,7 @@ function Agents() {
                 </div>
               ) : (
                 <div className="no-agents-message">
-                  <span className="no-agents-icon">⚠️</span>
+                  <span className="no-agents-icon">[!]</span>
                   <p>No agents currently connected.</p>
                   <p className="no-agents-hint">Start your edge agent using the Docker command below to establish a connection.</p>
                 </div>
@@ -297,7 +300,7 @@ function Agents() {
                     </button>
                   </div>
                   <p className="card-note" style={{ marginTop: '10px' }}>
-                    💡 Note: If you get an error that the container name is already in use when trying to set up a new agent, remove the existing container first using the command above, then run your new agent setup command.
+                    [NOTE] If you get an error that the container name is already in use when trying to set up a new agent, remove the existing container first using the command above, then run your new agent setup command.
                   </p>
                 </div>
               )}
@@ -348,7 +351,7 @@ function Agents() {
                     <li>Verify installation: Open PowerShell or WSL and run <code className="inline-code">docker --version</code></li>
                   </ol>
                   <p className="card-note">
-                    💡 Note: If you're using WSL, Docker Desktop will automatically integrate with your WSL distribution.
+                    [NOTE] If you're using WSL, Docker Desktop will automatically integrate with your WSL distribution.
                   </p>
                 </div>
               ) : (
@@ -390,7 +393,7 @@ sudo usermod -aG docker $USER
                     </p>
                   </div>
                   <p className="card-note">
-                    💡 Note: After installation, verify with <code className="inline-code">docker --version</code>
+                    [NOTE] After installation, verify with <code className="inline-code">docker --version</code>
                   </p>
                 </div>
               )}
@@ -413,7 +416,7 @@ sudo usermod -aG docker $USER
               </button>
             </div>
             <p className="card-note">
-              💡 This builds the IP-protected Edge Agent image. The build process may take a few minutes on first run.
+              [NOTE] This builds the IP-protected Edge Agent image. The build process may take a few minutes on first run.
             </p>
           </div>
 
@@ -451,19 +454,19 @@ sudo usermod -aG docker $USER
                         className={scanSourceType === 'repo' ? 'active' : ''} 
                         onClick={() => setScanSourceType('repo')}
                     >
-                        PUBLIC REPOSITORY
+                        GIT REPOSITORY
                     </button>
                 </div>
             </div>
 
             <p className="card-note" style={{marginTop: 0, marginBottom: '15px'}}>
-              ⚠️ Make sure you've completed Steps 01 and 02 before proceeding.
+              [!] Make sure you've completed Steps 01 and 02 before proceeding.
             </p>
 
             {scanSourceType === 'local' ? (
             <div className="directory-selector">
               <label className="directory-label">
-                <span>📁 Directory Path</span>
+                <span>[DIR] Directory Path</span>
                 <span className="label-hint">
                   {osPlatform === 'windows' 
                     ? 'Enter Windows path (e.g., C:\\Users\\... or relative path) or browse Hub filesystem' 
@@ -483,7 +486,7 @@ sudo usermod -aG docker $USER
                   onClick={handleBrowseDirectory}
                   title="Browse Hub filesystem"
                 >
-                  📁 Browse
+                  Browse
                 </button>
                 {selectedDirectory && (
                   <button 
@@ -510,11 +513,11 @@ sudo usermod -aG docker $USER
             ) : (
                 <div className="repo-instructions" style={{ padding: '0 20px', marginBottom: '20px' }}>
                     <p className="card-description">
-                        When scanning a public repository, the agent will clone the code directly. 
+                        When scanning a Git repository (Public or Private), the agent will clone the code directly. 
                         <strong>No local volume mount is required.</strong>
                     </p>
                     <p className="card-description">
-                        Simply run the command below. You will enter the Repository URL when creating a new scan.
+                        Simply run the command below. You will enter the Repository URL and Credentials (if private) when creating a new scan.
                     </p>
                 </div>
             )}
@@ -535,6 +538,12 @@ sudo usermod -aG docker $USER
                     COPY_COMMAND
                   </button>
                 </div>
+                
+                <p className="card-note" style={{ marginTop: '15px' }}>
+                  [TROUBLESHOOTING] If you get a "Conflict" error saying the container name is already in use, run this command to clear it:
+                  <br />
+                  <code className="inline-code" style={{ display: 'inline-block', marginTop: '8px' }}>docker rm -f pg-edge-agent</code>
+                </p>
               </>
             )}
           </div>
@@ -544,7 +553,7 @@ sudo usermod -aG docker $USER
         {hasConnectedAgent && (
           <section className="agent-connected-section">
             <div className="connected-message">
-              <span className="connected-icon">✅</span>
+              <span className="connected-icon">[OK]</span>
               <div className="connected-text">
                 <h2>Agent Connected</h2>
                 <p>Your edge agent is running and connected to the Hub. You can now perform scans using your local agent.</p>
@@ -594,7 +603,7 @@ sudo usermod -aG docker $USER
             <div className="more-info-expanded">
               <div className="info-content">
                 <div className="info-section">
-                  <h4>🔒 Privacy & Security</h4>
+                  <h4>[SEC] Privacy & Security</h4>
                   <p>
                     Edge Agents run entirely on your local machine. Your source code never leaves your environment. 
                     The agent performs all scanning locally and only sends encrypted scan results (findings) to the PassiveGuard Hub.
@@ -602,7 +611,7 @@ sudo usermod -aG docker $USER
                 </div>
                 
                 <div className="info-section">
-                  <h4>🐳 Docker Container</h4>
+                  <h4>[DOCKER] Docker Container</h4>
                   <p>
                     The Edge Agent runs as a Docker container, isolated from your system. You mount your code directory 
                     into the container using the <code>-v</code> flag. The agent scans files within this mounted directory 
@@ -611,7 +620,7 @@ sudo usermod -aG docker $USER
                 </div>
                 
                 <div className="info-section">
-                  <h4>🔑 Agent Key</h4>
+                  <h4>[KEY] Agent Key</h4>
                   <p>
                     Each user has a unique agent key that identifies their agent to the Hub. This key is used for 
                     authentication and ensures only your agent can send results to your account. Keep this key secret.
@@ -619,7 +628,7 @@ sudo usermod -aG docker $USER
                 </div>
                 
                 <div className="info-section">
-                  <h4>📡 Connection</h4>
+                  <h4>[CONN] Connection</h4>
                   <p>
                     The agent connects to the Hub via Socket.IO for real-time communication. It registers using your 
                     agent key and maintains a persistent connection. You can see the connection status at the top of this page.
@@ -627,7 +636,7 @@ sudo usermod -aG docker $USER
                 </div>
                 
                 <div className="info-section">
-                  <h4>🚀 Workflow</h4>
+                  <h4>[FLOW] Workflow</h4>
                   <ol>
                     <li>Copy your unique agent key</li>
                     <li>Select the directory you want to scan</li>
@@ -639,7 +648,7 @@ sudo usermod -aG docker $USER
                 </div>
                 
                 <div className="info-section">
-                  <h4>💡 Benefits</h4>
+                  <h4>[INFO] Benefits</h4>
                   <ul>
                     <li><strong>Privacy:</strong> Your code never leaves your machine</li>
                     <li><strong>Performance:</strong> Scanning happens locally, faster than remote scanning</li>
@@ -706,7 +715,7 @@ sudo usermod -aG docker $USER
             </div>
             <div className="modal-actions">
               <button type="button" className="btn btn-secondary" onClick={() => setShowDirectoryPicker(false)}>Cancel</button>
-              <button type="button" className="btn btn-primary" onClick={confirmDirectorySelection}>Select This Directory</button>
+              <button type="button" className="btn btn-primary" onClick={confirmDirectorySelection}>Select This Folder</button>
             </div>
           </div>
         </div>

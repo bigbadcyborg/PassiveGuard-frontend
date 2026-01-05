@@ -359,7 +359,7 @@ function Pricing() {
               </ul>
             </div>
 
-            <div className="card-footer">
+            <div className={`card-footer ${['overdrive', 'core'].includes(tier.id) ? 'center-btn' : ''}`}>
               <Link to="/register" className={`btn-cyber btn-${tier.color}`}>
                 <span className="btn-glitch-content">{tier.buttonText}</span>
                 <span className="btn-glitch-effect"></span>
@@ -463,9 +463,6 @@ function Pricing() {
         </div>
       </div>
 
-      <div className="pricing-footer">
-        <p>All transactions are secured via encrypted blockchain protocol. Terminate anytime.</p>
-      </div>
     </div>
   );
 }

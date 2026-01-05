@@ -70,6 +70,7 @@ function Scans() {
     name: '',
     target_path: '',
     scan_type: 'full',
+    scan_location: 'agent',
     frequency: 'daily',
     day_of_week: 0,
     day_of_month: 1,
@@ -88,7 +89,11 @@ function Scans() {
     name: '',
     target_path: '',
     scan_type: 'full',
-    scan_location: isSentinel ? 'agent' : 'hub'
+    scan_location: isSentinel ? 'agent' : 'hub',
+    scan_source: 'filesystem', // 'filesystem' or 'repository'
+    repo_username: '',
+    repo_token: '',
+    is_private_repo: false
   });
 
   // Folder Picker State
@@ -97,6 +102,7 @@ function Scans() {
   const [pickerItems, setPickerItems] = useState({ current: '/app/projects', parent: null, directories: [], files: [], is_agent: false });
   const [pickerLoading, setPickerLoading] = useState(false);
   const [browseTarget, setBrowseTarget] = useState(isSentinel ? 'agent' : 'hub'); // Default to agent if Sentinel
+  const [pickerMode, setPickerMode] = useState('new_scan'); // 'new_scan' or 'scheduled_scan'
 
   useEffect(() => {
     loadScans();
@@ -188,6 +194,13 @@ function Scans() {
 
   const handleScheduledSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if target_path is a URL (public repository)
+    if (scheduledFormData.target_path && (scheduledFormData.target_path.startsWith('http://') || scheduledFormData.target_path.startsWith('https://'))) {
+      alert('Hub repository scanning is under maintenance. Please use an Edge Agent.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       if (editingScheduledScan) {
@@ -212,6 +225,7 @@ function Scans() {
       name: '',
       target_path: '',
       scan_type: 'full',
+      scan_location: 'agent',
       frequency: 'daily',
       day_of_week: 0,
       day_of_month: 1,
@@ -228,6 +242,7 @@ function Scans() {
       name: scan.name,
       target_path: scan.target_path,
       scan_type: scan.scan_type || 'full',
+      scan_location: scan.scan_location || 'agent',
       frequency: scan.frequency,
       day_of_week: scan.day_of_week || 0,
       day_of_month: scan.day_of_month || 1,
@@ -311,17 +326,29 @@ function Scans() {
     }
   };
 
-  const handleBrowse = () => {
-    console.log("handleBrowse triggered", { role: user.role, isSentinel, scan_location: formData.scan_location });
+  const handleBrowse = (mode = 'new_scan') => {
+    setPickerMode(mode);
+    console.log("handleBrowse triggered", { mode, role: user.role, isSentinel, scan_location: formData.scan_location });
     setShowPicker(true);
-    // Use the explicitly selected scan_location as the starting point for browsing
-    const initialTarget = formData.scan_location;
+    
+    let initialTarget;
+    let currentPath;
+
+    if (mode === 'scheduled_scan') {
+      // Scheduled scans are now Agent-first
+      initialTarget = 'agent';
+      currentPath = scheduledFormData.target_path;
+    } else {
+      initialTarget = formData.scan_location;
+      currentPath = formData.target_path;
+    }
+
     setBrowseTarget(initialTarget);
     
     // Default path for hub is /app/projects, default for agent is empty (which resolves to its root)
     const defaultPath = initialTarget === 'hub' ? '/app/projects' : '';
-    console.log("Loading picker data", { path: formData.target_path || defaultPath, initialTarget });
-    loadPickerData(formData.target_path || defaultPath, initialTarget);
+    console.log("Loading picker data", { path: currentPath || defaultPath, initialTarget });
+    loadPickerData(currentPath || defaultPath, initialTarget);
   };
 
   const selectFolder = (dir) => {
@@ -336,7 +363,15 @@ function Scans() {
   };
 
   const confirmSelection = () => {
-    setFormData({ ...formData, target_path: pickerItems.current });
+    if (pickerMode === 'scheduled_scan') {
+      setScheduledFormData({ 
+        ...scheduledFormData, 
+        target_path: pickerItems.current,
+        scan_location: browseTarget
+      });
+    } else {
+      setFormData({ ...formData, target_path: pickerItems.current });
+    }
     setShowPicker(false);
   };
 
@@ -436,96 +471,104 @@ function Scans() {
               </small>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Target Path</label>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <input
-                  type="text"
-                  className="form-input"
-                  value={formData.target_path}
-                  onChange={(e) => setFormData({ ...formData, target_path: e.target.value })}
-                  placeholder="/path/to/codebase"
-                  required
-                />
-                <button type="button" className="btn btn-secondary" onClick={handleBrowse}>
-                  Browse
-                </button>
-              </div>
-            </div>
-
-            {showPicker && (
-              <div className="modal-overlay">
-                <div className="modal-content folder-picker">
-                  <button 
-                    className="picker-close-btn" 
-                    onClick={() => setShowPicker(false)}
-                    aria-label="Close file explorer"
-                  >
-                    ×
-                  </button>
-                  <div className="picker-header">
-                    <h3>Select Target Directory {pickerItems.is_agent ? '(Edge Agent)' : '(Hub)'}</h3>
-                    {!isSentinel && (
-                      <div className="picker-toggle">
-                        <button 
-                          className={`btn-toggle ${browseTarget === 'hub' ? 'active' : ''}`}
-                          onClick={() => loadPickerData('/app/projects', 'hub')}
-                        >
-                          HUB_FS
-                        </button>
-                        <button 
-                          className={`btn-toggle ${browseTarget === 'agent' ? 'active' : ''}`}
-                          onClick={() => loadPickerData('/app/projects', 'agent')}
-                        >
-                          AGENT_FS
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  <div className="picker-path">
-                    <strong>Current:</strong> {pickerItems.current}
-                  </div>
-                  <div className="picker-list">
-                    {pickerItems.parent && (
-                      <div className="picker-item parent" onClick={goUp}>
-                        📁 .. (Parent Directory)
-                      </div>
-                    )}
-                    {pickerLoading ? (
-                      <div className="spinner-small"></div>
-                    ) : (
-                      <>
-                        {pickerItems.directories && pickerItems.directories.length > 0 && (
-                          <>
-                            {pickerItems.directories.map(dir => (
-                              <div key={dir} className="picker-item picker-directory" onClick={() => selectFolder(dir)}>
-                                📁 {dir}
-                              </div>
-                            ))}
-                          </>
-                        )}
-                        {pickerItems.files && pickerItems.files.length > 0 && (
-                          <>
-                            {pickerItems.files.map(file => (
-                              <div key={file} className="picker-item picker-file">
-                                📄 {file}
-                              </div>
-                            ))}
-                          </>
-                        )}
-                        {!pickerLoading && (!pickerItems.directories || pickerItems.directories.length === 0) && (!pickerItems.files || pickerItems.files.length === 0) && (
-                          <div className="picker-empty">No files or directories found</div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <div className="modal-actions">
-                    <button type="button" className="btn btn-secondary" onClick={() => setShowPicker(false)}>Cancel</button>
-                    <button type="button" className="btn btn-primary" onClick={confirmSelection}>Select This Folder</button>
-                  </div>
+            {(formData.scan_location === 'hub' || formData.scan_location === 'agent') && (
+              <div className="form-group">
+                <label className="form-label">Source Type</label>
+                <div style={{ display: 'flex', gap: '20px', marginTop: '5px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="scan_source"
+                      value="filesystem"
+                      checked={formData.scan_source === 'filesystem'}
+                      onChange={(e) => setFormData({ ...formData, scan_source: e.target.value })}
+                    />
+                    {formData.scan_location === 'agent' ? 'Local Filesystem' : 'Server Filesystem'}
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="scan_source"
+                      value="repository"
+                      checked={formData.scan_source === 'repository'}
+                      onChange={(e) => setFormData({ ...formData, scan_source: e.target.value })}
+                    />
+                    Git Repository
+                  </label>
                 </div>
               </div>
             )}
+
+            {formData.scan_source === 'repository' ? (
+              <>
+                <div className="form-group">
+                  <label className="form-label">Repository URL</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={formData.target_path}
+                    onChange={(e) => setFormData({ ...formData, target_path: e.target.value })}
+                    placeholder="https://github.com/username/repo.git"
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.is_private_repo}
+                      onChange={(e) => setFormData({ ...formData, is_private_repo: e.target.checked })}
+                    />
+                    Private Repository
+                  </label>
+                </div>
+
+                {formData.is_private_repo && (
+                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                    <div className="form-group">
+                      <label className="form-label">Username</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={formData.repo_username}
+                        onChange={(e) => setFormData({ ...formData, repo_username: e.target.value })}
+                        placeholder="Git Username"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Access Token / Password</label>
+                      <input
+                        type="password"
+                        className="form-input"
+                        value={formData.repo_token}
+                        onChange={(e) => setFormData({ ...formData, repo_token: e.target.value })}
+                        placeholder="Personal Access Token"
+                      />
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="form-group">
+                <label className="form-label">Target Path</label>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={formData.target_path}
+                    onChange={(e) => setFormData({ ...formData, target_path: e.target.value })}
+                    placeholder="/path/to/codebase"
+                    required
+                  />
+                  <button type="button" className="btn btn-secondary" onClick={handleBrowse}>
+                    Browse
+                  </button>
+                </div>
+              </div>
+            )}
+
+
             <div className="form-group">
               <label className="form-label">Scan Type</label>
               <select
@@ -567,28 +610,27 @@ function Scans() {
       {/* Scheduled Scans Section - Only for Overdrive/Nexus */}
       {canScheduleScans && (
         <div className="card scheduled-scans-section">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <div>
-              <h2 className="card-title" style={{ marginBottom: '5px' }}>🔄 Scheduled Scans</h2>
-              <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '14px' }}>
-                Recurring vulnerability scans with email alerts ({scheduledScansLimits.current_count}/{scheduledScansLimits.max_scheduled_scans} used)
+          <div className="section-header">
+            <div className="header-content">
+              <h2 className="card-title">🔄 Scheduled Scans</h2>
+              <p className="section-subtitle">
+                Recurring vulnerability scans with email alerts
               </p>
             </div>
             <button 
-              className="btn btn-primary" 
+              className="btn btn-primary btn-sm" 
               onClick={() => { 
                 setEditingScheduledScan(null); 
                 resetScheduledForm(); 
                 setShowScheduledForm(!showScheduledForm); 
               }}
-              disabled={scheduledScansLimits.current_count >= scheduledScansLimits.max_scheduled_scans && !showScheduledForm}
             >
               {showScheduledForm ? 'Cancel' : '+ New Schedule'}
             </button>
           </div>
 
           {showScheduledForm && (
-            <form onSubmit={handleScheduledSubmit} className="scheduled-scan-form" style={{ marginBottom: '20px', padding: '20px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+            <form onSubmit={handleScheduledSubmit} className="scheduled-scan-form">
               <h3 style={{ marginTop: 0 }}>{editingScheduledScan ? 'Edit Scheduled Scan' : 'Create Scheduled Scan'}</h3>
               
               <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
@@ -605,14 +647,19 @@ function Scans() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Target Path</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={scheduledFormData.target_path}
-                    onChange={(e) => setScheduledFormData({ ...scheduledFormData, target_path: e.target.value })}
-                    placeholder="/app/projects/your-repo"
-                    required
-                  />
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={scheduledFormData.target_path}
+                      onChange={(e) => setScheduledFormData({ ...scheduledFormData, target_path: e.target.value })}
+                      placeholder="/app/projects/your-repo"
+                      required
+                    />
+                    <button type="button" className="btn btn-secondary" onClick={() => handleBrowse('scheduled_scan')}>
+                      Browse
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -730,7 +777,11 @@ function Scans() {
           {scheduledScansLoading ? (
             <div className="spinner-small"></div>
           ) : scheduledScans.length === 0 ? (
-            <p style={{ color: 'var(--text-secondary)' }}>No scheduled scans yet. Create one to automate your vulnerability scanning.</p>
+            <div className="empty-state">
+              <span className="empty-icon">📅</span>
+              <p>No scheduled scans yet.</p>
+              <p className="empty-hint">Create a schedule to automate your vulnerability scanning.</p>
+            </div>
           ) : (
             <div className="table-responsive">
               <table className="table">
@@ -904,6 +955,80 @@ function Scans() {
           </div>
         )}
       </div>
+
+      {showPicker && (
+        <div className="modal-overlay">
+          <div className="modal-content folder-picker">
+            <button 
+              className="picker-close-btn" 
+              onClick={() => setShowPicker(false)}
+              aria-label="Close file explorer"
+            >
+              ×
+            </button>
+            <div className="picker-header">
+              <h3>Select Target Directory {pickerItems.is_agent ? '(Edge Agent)' : '(Hub)'}</h3>
+              {!isSentinel && pickerMode !== 'scheduled_scan' && (
+                <div className="picker-toggle">
+                  <button 
+                    className={`btn-toggle ${browseTarget === 'hub' ? 'active' : ''}`}
+                    onClick={() => loadPickerData('/app/projects', 'hub')}
+                  >
+                    HUB_FS
+                  </button>
+                  <button 
+                    className={`btn-toggle ${browseTarget === 'agent' ? 'active' : ''}`}
+                    onClick={() => loadPickerData('/app/projects', 'agent')}
+                  >
+                    AGENT_FS
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="picker-path">
+              <strong>Current:</strong> {pickerItems.current}
+            </div>
+            <div className="picker-list">
+              {pickerItems.parent && (
+                <div className="picker-item parent" onClick={goUp}>
+                  📁 .. (Parent Directory)
+                </div>
+              )}
+              {pickerLoading ? (
+                <div className="spinner-small"></div>
+              ) : (
+                <>
+                  {pickerItems.directories && pickerItems.directories.length > 0 && (
+                    <>
+                      {pickerItems.directories.map(dir => (
+                        <div key={dir} className="picker-item picker-directory" onClick={() => selectFolder(dir)}>
+                          📁 {dir}
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {pickerItems.files && pickerItems.files.length > 0 && (
+                    <>
+                      {pickerItems.files.map(file => (
+                        <div key={file} className="picker-item picker-file">
+                          📄 {file}
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {!pickerLoading && (!pickerItems.directories || pickerItems.directories.length === 0) && (!pickerItems.files || pickerItems.files.length === 0) && (
+                    <div className="picker-empty">No files or directories found</div>
+                  )}
+                </>
+              )}
+            </div>
+            <div className="modal-actions">
+              <button type="button" className="btn btn-secondary" onClick={() => setShowPicker(false)}>Cancel</button>
+              <button type="button" className="btn btn-primary" onClick={confirmSelection}>Select This Folder</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

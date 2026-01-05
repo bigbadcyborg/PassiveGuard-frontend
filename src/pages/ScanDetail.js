@@ -452,7 +452,7 @@ function ScanDetail() {
             ></div>
           </div>
           <p className="progress-status">
-            <span className="spinner-small"></span> {progress?.status || 'Initializing System... '}
+            <span className="spinner-small"></span> {progress?.status || 'Initializing System... (This may take a moment for large repositories)'}
           </p>
         </div>
       )}

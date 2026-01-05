@@ -54,6 +54,17 @@ PassiveGuard supports distributed Edge Agents for privacy-preserving local scann
   - "Tell Me More" expandable information section
 - **File Browser**: Visual directory navigation showing files and directories
 - **Real-Time Updates**: Socket.IO-based connection monitoring
+- **Scheduled Scans**: Automated recurring scans that run directly on your local Edge Agent
+- **Offline Alerts**: Email notifications if your agent is offline during a scheduled scan
+
+## Hub Repository Scanning
+
+For Overdrive and Nexus users, PassiveGuard supports direct cloud-based scanning of Git repositories:
+
+- **Public Repositories**: Scan any public Git URL directly from the Hub
+- **Private Repositories**: Securely scan private repos using Personal Access Tokens (PAT)
+- **Sandboxed Execution**: Each scan runs in an isolated temporary environment
+- **Auto-Cleanup**: Cloned code is immediately deleted after analysis
 
 ## User Tiers
 
