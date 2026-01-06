@@ -6,6 +6,11 @@ import BeforeAfterComparison from '../components/home/BeforeAfterComparison';
 import UrgencyBanner from '../components/home/UrgencyBanner';
 import SecurityNewsFeed from '../components/home/SecurityNewsFeed';
 import ValueProposition from '../components/home/ValueProposition';
+import TrustedLogos from '../components/home/TrustedLogos';
+import SIEMPillars from '../components/home/SIEMPillars';
+import UseCaseSlider from '../components/home/UseCaseSlider';
+import ArchitectureDiagram from '../components/home/ArchitectureDiagram';
+import Testimonials from '../components/home/Testimonials';
 import './Home.css';
 
 const IconSearch = () => (
@@ -45,6 +50,14 @@ const IconNetwork = () => (
   </svg>
 );
 
+const IconShield = () => (
+  <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
+    <path d="M32 4l-18 8v16c0 14 18 28 18 28s18-14 18-28v-16l-18-8z" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeJoin="round" />
+    <path d="M32 14v24" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+    <path d="M22 26h20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+  </svg>
+);
+
 // ... (Icon components remain the same)
 
 const iconMap = {
@@ -52,17 +65,26 @@ const iconMap = {
   taint: <IconTaint />,
   iac: <IconIac />,
   supply: <IconSupply />,
-  network: <IconNetwork />
+  network: <IconNetwork />,
+  shield: <IconShield />
 };
 
 const features = [
+  {
+    title: "PASSIVEGUARD",
+    subtitle: "NEXT-GEN SIEM & SOAR",
+    description: "Uncover threats others miss with our AI-Powered Scanner. Faster detection, smarter responses, and seamless integration for your SOC.",
+    color: "#00f3ff",
+    icon: "shield",
+    video: "/videos/static-analysis.mp4"
+  },
   {
     title: "STATIC ANALYSIS",
     subtitle: "SAST / SEMGREP / BANDIT",
     description: "Deep inspection of source code for hardcoded secrets, SQL injection, XSS, and insecure function calls using industry-leading engines.",
     color: "#00f3ff",
     icon: "search",
-    video: "/videos/static-analysis.mp4"
+    video: "/videos/security-shield.mp4"
   },
   {
     title: "TAINT TRACKING",
@@ -78,7 +100,7 @@ const features = [
     description: "Scan your cloud infrastructure configurations for misconfigurations, privileged containers, and exposed secrets before they deploy.",
     color: "#bc13fe",
     icon: "iac",
-    video: "/videos/security-shield.mp4"
+    video: "/videos/x.mp4"
   },
   {
     title: "SUPPLY CHAIN SECURITY",
@@ -235,6 +257,14 @@ const Home = () => {
           >
             PASSIVEGUARD
           </motion.div>
+          
+          {/* NEW: Home Nav for unauthenticated users */}
+          <nav className="home-nav-links" style={{ display: 'flex', gap: '20px' }}>
+              <Link to="/features/workflows" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Workflows</Link>
+              <Link to="/features/response" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Response</Link>
+              <Link to="/features/integrations" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Integrations</Link>
+          </nav>
+
           <div className="header-actions">
             <Link to="/login" className="cyber-btn login-btn">LOGIN</Link>
             <Link to="/pricing" className="cyber-btn register-btn">PRICING</Link>
@@ -243,8 +273,11 @@ const Home = () => {
       )}
 
       <div className="scroll-container">
-        <section className="hero-section">
+         {/* EXISTING: The Technical Slider (now primary) */}
+        <section className="hero-section" style={{ height: '100vh' }}>
           <BackgroundVideo features={features} currentSlide={currentSlide} />
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.4)', zIndex: 0 }}></div>
+          
           <main className="glitch-slider">
             <AnimatePresence mode="wait">
               <motion.div
@@ -275,6 +308,18 @@ const Home = () => {
             </div>
           </main>
         </section>
+
+         {/* NEW: Social Proof */}
+         <TrustedLogos />
+
+         {/* NEW: 5 Pillars */}
+         <SIEMPillars />
+
+        {/* NEW: Use Cases */}
+        <UseCaseSlider />
+
+        {/* NEW: Architecture */}
+        <ArchitectureDiagram />
 
         <motion.section 
           className="feature-section"
@@ -311,6 +356,9 @@ const Home = () => {
         >
           <ThreatVisualization />
         </motion.section>
+
+         {/* NEW: Testimonials */}
+         <Testimonials />
 
         <motion.section 
           className="feature-section alt-bg"
@@ -382,16 +430,39 @@ const Home = () => {
                   </tr>
                 </tbody>
               </table>
+
             </div>
           </div>
         </motion.section>
 
-        <footer className="home-footer">
-          <div className="footer-status">
-            <span className="status-indicator"></span>
-            SYSTEM STATUS: SECURE
+        <footer className="home-footer" style={{ display: 'flex', flexDirection: 'column', paddingBottom: '20px' }}>
+          
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '80px', fontSize: '0.9rem', color: '#888', marginBottom: '3rem', width: '100%', borderBottom: '1px solid #222', paddingBottom: '2rem' }}>
+             <div style={{ textAlign: 'left' }}>
+                <strong style={{ color: '#fff', display: 'block', marginBottom: '15px', letterSpacing: '1px' }}>PRODUCT</strong>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                   <li style={{ marginBottom: '10px' }}><Link to="/features/workflows" style={{ color: '#888', textDecoration: 'none' }}>Automation</Link></li>
+                   <li style={{ marginBottom: '10px' }}><Link to="/features/response" style={{ color: '#888', textDecoration: 'none' }}>Response</Link></li>
+                   <li style={{ marginBottom: '10px' }}><Link to="/features/integrations" style={{ color: '#888', textDecoration: 'none' }}>Integrations</Link></li>
+                </ul>
+             </div>
+             <div style={{ textAlign: 'left' }}>
+                <strong style={{ color: '#fff', display: 'block', marginBottom: '15px', letterSpacing: '1px' }}>COMPANY</strong>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                   <li style={{ marginBottom: '10px' }}><Link to="/pricing" style={{ color: '#888', textDecoration: 'none' }}>Pricing</Link></li>
+                   <li style={{ marginBottom: '10px' }}><Link to="/blog" style={{ color: '#888', textDecoration: 'none' }}>Blog</Link></li>
+                   <li style={{ marginBottom: '10px' }}>About Us</li>
+                </ul>
+             </div>
           </div>
-          <div className="footer-version">v1.0.5 STABLE</div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '0 2rem', boxSizing: 'border-box' }}>
+            <div className="footer-status">
+              <span className="status-indicator"></span>
+              SYSTEM STATUS: SECURE
+            </div>
+            <div className="footer-version">v1.0.5 STABLE</div>
+          </div>
         </footer>
       </div>
 

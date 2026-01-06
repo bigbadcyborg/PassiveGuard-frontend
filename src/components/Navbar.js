@@ -30,6 +30,9 @@ function Navbar() {
           {isAuthenticated ? (
             <>
               <Link to="/" className="navbar-link">Dashboard</Link>
+              <Link to="/features/workflows" className="navbar-link">Workflows</Link>
+              <Link to="/features/response" className="navbar-link">Response</Link>
+              <Link to="/features/integrations" className="navbar-link">Integrations</Link>
               <Link to="/scans" className="navbar-link">Scans</Link>
               <Link to="/agents" className="navbar-link">Agents</Link>
               <Link to="/pricing" className="navbar-link">Pricing</Link>
@@ -49,6 +52,9 @@ function Navbar() {
             </>
           ) : (
             <>
+              <Link to="/features/workflows" className="navbar-link">Workflows</Link>
+              <Link to="/features/response" className="navbar-link">Response</Link>
+              <Link to="/features/integrations" className="navbar-link">Integrations</Link>
               <Link to="/pricing" className="navbar-link">Pricing</Link>
               <Link to="/login" className="navbar-link">Login</Link>
               <Link to="/register" className="navbar-link">Register</Link>

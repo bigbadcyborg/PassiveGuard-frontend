@@ -17,6 +17,9 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Agents from './pages/Agents';
 import DebugAgents from './pages/DebugAgents';
+import Workflows from './pages/features/Workflows';
+import Response from './pages/features/Response';
+import Integrations from './pages/features/Integrations';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -46,6 +49,9 @@ function MainContent({ isAuthenticated }) {
         <Route path="/register" element={<Register />} />
         <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/resend-verification" element={<ResendVerification />} />
+        <Route path="/features/workflows" element={<Workflows />} />
+        <Route path="/features/response" element={<Response />} />
+        <Route path="/features/integrations" element={<Integrations />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route
           path="/"
