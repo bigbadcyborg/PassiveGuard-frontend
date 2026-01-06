@@ -4,12 +4,19 @@ const SecurityNewsFeed = () => {
   const [news, setNews] = useState([]);
 
   useEffect(() => {
+    // Helper to get dynamic dates
+    const getDate = (daysAgo) => {
+      const date = new Date();
+      date.setDate(date.getDate() - daysAgo);
+      return date.toISOString().split('T')[0];
+    };
+
     // Mock data for MVP - in production this would fetch from an API
     const mockNews = [
-      { id: 1, title: "Zero-Day in Popular Java Library", severity: "CRITICAL", date: "2026-01-02" },
-      { id: 2, title: "New Ransomware Variant Targeting CI/CD", severity: "HIGH", date: "2026-01-01" },
-      { id: 3, title: "Python Package Index Malicious Uploads", severity: "MEDIUM", date: "2025-12-31" },
-      { id: 4, title: "Kubernetes Privilege Escalation Flaw", severity: "HIGH", date: "2025-12-30" },
+      { id: 1, title: "Zero-Day in Popular Java Library", severity: "CRITICAL", date: getDate(0) },
+      { id: 2, title: "New Ransomware Variant Targeting CI/CD", severity: "HIGH", date: getDate(1) },
+      { id: 3, title: "Python Package Index Malicious Uploads", severity: "MEDIUM", date: getDate(2) },
+      { id: 4, title: "Kubernetes Privilege Escalation Flaw", severity: "HIGH", date: getDate(3) },
     ];
     setNews(mockNews);
   }, []);

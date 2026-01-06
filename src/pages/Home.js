@@ -10,6 +10,7 @@ import TrustedLogos from '../components/home/TrustedLogos';
 import SIEMPillars from '../components/home/SIEMPillars';
 import UseCaseSlider from '../components/home/UseCaseSlider';
 import ArchitectureDiagram from '../components/home/ArchitectureDiagram';
+import TDIRPlatform from '../components/home/TDIRPlatform';
 import Testimonials from '../components/home/Testimonials';
 import './Home.css';
 
@@ -312,6 +313,9 @@ const Home = () => {
          {/* NEW: Social Proof */}
          <TrustedLogos />
 
+         {/* NEW: TDIR Platform */}
+         <TDIRPlatform />
+
          {/* NEW: 5 Pillars */}
          <SIEMPillars />
 
@@ -344,7 +348,7 @@ const Home = () => {
           viewport={{ once: true, amount: 0.2 }}
           variants={sectionVariants}
         >
-          <ValueProposition />
+          {/* Moved ValueProposition from here to bottom */}
         </motion.section>
 
         <motion.section 
@@ -377,62 +381,7 @@ const Home = () => {
           viewport={{ once: true, amount: 0.2 }}
           variants={sectionVariants}
         >
-          <div className="container">
-            <h2 className="section-title center">WHY PASSIVEGUARD?</h2>
-            <p className="section-description center">
-              The next generation of vulnerability scanning, built for modern DevSecOps.
-            </p>
-            
-            <div className="comparison-table-container">
-              <table className="why-us-table">
-                <thead>
-                  <tr>
-                    <th>FEATURE</th>
-                    <th className="legacy-col">LEGACY SCANNERS (Qualys/Nessus)</th>
-                    <th className="pg-col">OUR SCANNER</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="feature-cell">Setup Time</td>
-                    <td className="legacy-cell">Days (Complex Agents)</td>
-                    <td className="pg-cell">&lt; 2 Minutes</td>
-                  </tr>
-                  <tr>
-                    <td className="feature-cell">Signal-to-Noise</td>
-                    <td className="legacy-cell">High (Many False Positives)</td>
-                    <td className="pg-cell">AI-Verified Results</td>
-                  </tr>
-                  <tr>
-                    <td className="feature-cell">Impact on Production</td>
-                    <td className="legacy-cell">Active Probing (Risk of Downtime)</td>
-                    <td className="pg-cell">Zero Impact (Passive Analysis)</td>
-                  </tr>
-                  <tr>
-                    <td className="feature-cell">Data Privacy</td>
-                    <td className="legacy-cell">Data Uploaded to Cloud</td>
-                    <td className="pg-cell">Local Scanning (Data Stays with You)</td>
-                  </tr>
-                  <tr>
-                    <td className="feature-cell">Modern Tech Support</td>
-                    <td className="legacy-cell">Slow to Adapt (Monolithic)</td>
-                    <td className="pg-cell">Cloud-Native (K8s, Terraform, API-First)</td>
-                  </tr>
-                  <tr>
-                    <td className="feature-cell">Pricing</td>
-                    <td className="legacy-cell">Per-Asset (Expensive Scale)</td>
-                    <td className="pg-cell">Transparent, Predictable</td>
-                  </tr>
-                  <tr>
-                    <td className="feature-cell">Dev Experience</td>
-                    <td className="legacy-cell">PDF Reports</td>
-                    <td className="pg-cell">Direct GitHub/GitLab Integration</td>
-                  </tr>
-                </tbody>
-              </table>
-
-            </div>
-          </div>
+           <ValueProposition />
         </motion.section>
 
         <footer className="home-footer" style={{ display: 'flex', flexDirection: 'column', paddingBottom: '20px' }}>

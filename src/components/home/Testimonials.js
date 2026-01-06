@@ -10,20 +10,12 @@ const Testimonials = () => {
                     <p style={{ color: '#ccc', fontStyle: 'italic', marginBottom: '1.5rem' }}>
                         "PassiveGuard cut our incident response time in half and uncovered threats we didn't know we were missing. It's the only tool my team actually enjoys using."
                     </p>
-                    <div>
-                        <strong style={{ color: '#fff', display: 'block' }}>Sarah Connor</strong>
-                        <span style={{ color: '#666', fontSize: '0.9rem' }}>CISO, Skynet Systems</span>
-                    </div>
                 </div>
 
                 <div style={{ background: '#111', padding: '2rem', borderLeft: '4px solid #bc13fe' }}>
                     <p style={{ color: '#ccc', fontStyle: 'italic', marginBottom: '1.5rem' }}>
                         "The AI correlation is magic. We went from drowning in false positives to only seeing what matters. The board loves the executive reports."
                     </p>
-                    <div>
-                        <strong style={{ color: '#fff', display: 'block' }}>Rick Deckard</strong>
-                        <span style={{ color: '#666', fontSize: '0.9rem' }}>VP Security, Tyrell Corp</span>
-                    </div>
                 </div>
 
             </div>
