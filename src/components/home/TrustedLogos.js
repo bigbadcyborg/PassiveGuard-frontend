@@ -2,7 +2,7 @@ import React from 'react';
 
 const TrustedLogos = () => {
   const logos = [
-    "CYBERDYNE", "MASSIVE DYNAMIC", "WAYLAND YUTANI", "TYRELL CORP", "ARASAKA"
+    "MICROSOFT", "GOOGLE", "AWS", "CISCO", "IBM"
   ];
 
   return (

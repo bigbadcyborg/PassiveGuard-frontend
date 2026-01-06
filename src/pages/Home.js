@@ -6,7 +6,6 @@ import BeforeAfterComparison from '../components/home/BeforeAfterComparison';
 import UrgencyBanner from '../components/home/UrgencyBanner';
 import SecurityNewsFeed from '../components/home/SecurityNewsFeed';
 import ValueProposition from '../components/home/ValueProposition';
-import TrustedLogos from '../components/home/TrustedLogos';
 import SIEMPillars from '../components/home/SIEMPillars';
 import UseCaseSlider from '../components/home/UseCaseSlider';
 import ArchitectureDiagram from '../components/home/ArchitectureDiagram';
@@ -309,9 +308,6 @@ const Home = () => {
             </div>
           </main>
         </section>
-
-         {/* NEW: Social Proof */}
-         <TrustedLogos />
 
          {/* NEW: TDIR Platform */}
          <TDIRPlatform />
