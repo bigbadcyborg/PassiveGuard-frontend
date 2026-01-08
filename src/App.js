@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import PlatformOverviewAndCore from './pages/docs/PlatformOverviewAndCore';
+import TechnicalImplementation from './pages/docs/TechnicalImplementation';
+import AdvancedFeatures from './pages/docs/AdvancedFeatures';
+import FutureProofing from './pages/docs/FutureProofing';
+import IncidentResponse from './pages/docs/IncidentResponse';
+import SecurityOperations from './pages/docs/SecurityOperations';
+import ContinuousImprovement from './pages/docs/ContinuousImprovement';
+import ImplementationDeployment from './pages/docs/ImplementationDeployment';
+import IntegrationCapabilities from './pages/docs/IntegrationCapabilities';
+import MonitoringMaintenance from './pages/docs/MonitoringMaintenance';
 import Dashboard from './pages/Dashboard';
 import Scans from './pages/Scans';
 import ScanDetail from './pages/ScanDetail';
@@ -59,6 +69,17 @@ function MainContent({ isAuthenticated }) {
         <Route path="/platform/coverage" element={<Coverage />} />
         <Route path="/platform/tuning" element={<Tuning />} />
         <Route path="/pricing" element={<Pricing />} />
+        {/* Documentation Dropdown Pages */}
+        <Route path="/docs/platform-overview" element={<PlatformOverviewAndCore />} />
+        <Route path="/docs/technical-implementation" element={<TechnicalImplementation />} />
+        <Route path="/docs/advanced-features" element={<AdvancedFeatures />} />
+        <Route path="/docs/future-proofing" element={<FutureProofing />} />
+        <Route path="/docs/incident-response" element={<IncidentResponse />} />
+        <Route path="/docs/security-operations" element={<SecurityOperations />} />
+        <Route path="/docs/continuous-improvement" element={<ContinuousImprovement />} />
+        <Route path="/docs/implementation-deployment" element={<ImplementationDeployment />} />
+        <Route path="/docs/integration-capabilities" element={<IntegrationCapabilities />} />
+        <Route path="/docs/monitoring-maintenance" element={<MonitoringMaintenance />} />
         <Route
           path="/"
           element={

@@ -1,26 +1,35 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const UseCaseSlider = () => {
+    const navigate = useNavigate();
     const cases = [
         {
             title: "Insider Threat Detection",
             content: "Identify anomalous user behavior and data exfiltration attempts before they become breaches. PassiveGuard baselines normal activity and flags deviations instantly.",
-            img: "👤"
+            img: "👤",
+            route: "/docs/security-operations"
         },
         {
             title: "Cloud Security Monitoring",
             content: "Gain visibility into your AWS, Azure, and GCP logs. Detect misconfigurations, unauthorized access, and insecure storage buckets in real-time.",
-            img: "☁️"
+            img: "☁️",
+            route: "/docs/integration-capabilities"
         },
         {
             title: "Threat Hunting",
             content: "Proactively search through petabytes of data using our high-speed query engine. Pivot from indicators of compromise (IOCs) to root cause in seconds.",
-            img: "🎯"
+            img: "🎯",
+            route: "/docs/security-operations"
         }
     ];
 
     const [active, setActive] = useState(0);
+
+    const handleLearnMore = () => {
+        navigate(cases[active].route);
+    };
 
     return (
         <div className="container" style={{ padding: '6rem 0' }}>
@@ -61,7 +70,7 @@ const UseCaseSlider = () => {
                          <div>
                              <h3 style={{ color: '#fff', fontSize: '2rem', marginBottom: '1.5rem' }}>{cases[active].title}</h3>
                              <p style={{ color: '#ccc', fontSize: '1.2rem', lineHeight: '1.8' }}>{cases[active].content}</p>
-                             <button className="cyber-btn" style={{ marginTop: '2rem', fontSize: '0.9rem' }}>LEARN MORE</button>
+                             <button className="cyber-btn" style={{ marginTop: '2rem', fontSize: '0.9rem' }} onClick={handleLearnMore}>LEARN MORE</button>
                          </div>
                     </motion.div>
                 </AnimatePresence>

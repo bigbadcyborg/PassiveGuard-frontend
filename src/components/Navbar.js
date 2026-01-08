@@ -30,9 +30,31 @@ function Navbar() {
           {isAuthenticated ? (
             <>
               <Link to="/" className="navbar-link">Dashboard</Link>
-              <Link to="/features/workflows" className="navbar-link">Workflows</Link>
-              <Link to="/features/response" className="navbar-link">Response</Link>
-              <Link to="/features/integrations" className="navbar-link">Integrations</Link>
+              <div className="dropdown">
+                <Link to="/features/workflows" className="navbar-link">Workflows</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/platform-overview" className="dropdown-item">Platform Overview & Core Components</Link>
+                  <Link to="/docs/technical-implementation" className="dropdown-item">Technical Implementation & Data Flow</Link>
+                  <Link to="/docs/advanced-features" className="dropdown-item">Advanced Features & Security Capabilities</Link>
+                  <Link to="/docs/future-proofing" className="dropdown-item">Future-Proofing & Innovation</Link>
+                </div>
+              </div>
+              <div className="dropdown">
+                <Link to="/features/response" className="navbar-link">Response</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/incident-response" className="dropdown-item">Incident Response & Automation Framework</Link>
+                  <Link to="/docs/security-operations" className="dropdown-item">Security Operations & Best Practices</Link>
+                  <Link to="/docs/continuous-improvement" className="dropdown-item">Continuous Improvement</Link>
+                </div>
+              </div>
+              <div className="dropdown">
+                <Link to="/features/integrations" className="navbar-link">Integrations</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/implementation-deployment" className="dropdown-item">Implementation & Deployment</Link>
+                  <Link to="/docs/integration-capabilities" className="dropdown-item">Integration Capabilities</Link>
+                  <Link to="/docs/monitoring-maintenance" className="dropdown-item">Monitoring & Maintenance</Link>
+                </div>
+              </div>
               <Link to="/scans" className="navbar-link">Scans</Link>
               <Link to="/agents" className="navbar-link">Agents</Link>
               <Link to="/pricing" className="navbar-link">Pricing</Link>
@@ -52,9 +74,31 @@ function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/features/workflows" className="navbar-link">Workflows</Link>
-              <Link to="/features/response" className="navbar-link">Response</Link>
-              <Link to="/features/integrations" className="navbar-link">Integrations</Link>
+              <div className="dropdown">
+                <Link to="/features/workflows" className="navbar-link">Workflows</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/platform-overview" className="dropdown-item">Platform Overview & Core Components</Link>
+                  <Link to="/docs/technical-implementation" className="dropdown-item">Technical Implementation & Data Flow</Link>
+                  <Link to="/docs/advanced-features" className="dropdown-item">Advanced Features & Security Capabilities</Link>
+                  <Link to="/docs/future-proofing" className="dropdown-item">Future-Proofing & Innovation</Link>
+                </div>
+              </div>
+              <div className="dropdown">
+                <Link to="/features/response" className="navbar-link">Response</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/incident-response" className="dropdown-item">Incident Response & Automation Framework</Link>
+                  <Link to="/docs/security-operations" className="dropdown-item">Security Operations & Best Practices</Link>
+                  <Link to="/docs/continuous-improvement" className="dropdown-item">Continuous Improvement</Link>
+                </div>
+              </div>
+              <div className="dropdown">
+                <Link to="/features/integrations" className="navbar-link">Integrations</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/implementation-deployment" className="dropdown-item">Implementation & Deployment</Link>
+                  <Link to="/docs/integration-capabilities" className="dropdown-item">Integration Capabilities</Link>
+                  <Link to="/docs/monitoring-maintenance" className="dropdown-item">Monitoring & Maintenance</Link>
+                </div>
+              </div>
               <Link to="/pricing" className="navbar-link">Pricing</Link>
               <Link to="/login" className="navbar-link">Login</Link>
               <Link to="/register" className="navbar-link">Register</Link>

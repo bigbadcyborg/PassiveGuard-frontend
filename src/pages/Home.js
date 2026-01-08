@@ -12,6 +12,7 @@ import ArchitectureDiagram from '../components/home/ArchitectureDiagram';
 import TDIRPlatform from '../components/home/TDIRPlatform';
 import Testimonials from '../components/home/Testimonials';
 import './Home.css';
+import '../components/Navbar.css';
 
 const IconSearch = () => (
   <svg viewBox="0 0 64 64" role="img" aria-hidden="true">
@@ -260,9 +261,31 @@ const Home = () => {
           
           {/* NEW: Home Nav for unauthenticated users */}
           <nav className="home-nav-links" style={{ display: 'flex', gap: '20px' }}>
-              <Link to="/features/workflows" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Workflows</Link>
-              <Link to="/features/response" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Response</Link>
-              <Link to="/features/integrations" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Integrations</Link>
+              <div className="dropdown">
+                <Link to="/features/workflows" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Workflows</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/platform-overview" className="dropdown-item">Platform Overview & Core Components</Link>
+                  <Link to="/docs/technical-implementation" className="dropdown-item">Technical Implementation & Data Flow</Link>
+                  <Link to="/docs/advanced-features" className="dropdown-item">Advanced Features & Security Capabilities</Link>
+                  <Link to="/docs/future-proofing" className="dropdown-item">Future-Proofing & Innovation</Link>
+                </div>
+              </div>
+              <div className="dropdown">
+                <Link to="/features/response" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Response</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/incident-response" className="dropdown-item">Incident Response & Automation Framework</Link>
+                  <Link to="/docs/security-operations" className="dropdown-item">Security Operations & Best Practices</Link>
+                  <Link to="/docs/continuous-improvement" className="dropdown-item">Continuous Improvement</Link>
+                </div>
+              </div>
+              <div className="dropdown">
+                <Link to="/features/integrations" className="navbar-link" style={{ fontFamily: "'Courier New', monospace", color: '#fff' }}>Integrations</Link>
+                <div className="dropdown-content">
+                  <Link to="/docs/implementation-deployment" className="dropdown-item">Implementation & Deployment</Link>
+                  <Link to="/docs/integration-capabilities" className="dropdown-item">Integration Capabilities</Link>
+                  <Link to="/docs/monitoring-maintenance" className="dropdown-item">Monitoring & Maintenance</Link>
+                </div>
+              </div>
           </nav>
 
           <div className="header-actions">
