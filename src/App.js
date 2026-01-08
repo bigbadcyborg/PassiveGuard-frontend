@@ -20,6 +20,9 @@ import DebugAgents from './pages/DebugAgents';
 import Workflows from './pages/features/Workflows';
 import Response from './pages/features/Response';
 import Integrations from './pages/features/Integrations';
+import PlatformOverview from './pages/PlatformOverview';
+import Coverage from './pages/Coverage';
+import Tuning from './pages/Tuning';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -52,6 +55,9 @@ function MainContent({ isAuthenticated }) {
         <Route path="/features/workflows" element={<Workflows />} />
         <Route path="/features/response" element={<Response />} />
         <Route path="/features/integrations" element={<Integrations />} />
+        <Route path="/platform" element={<PlatformOverview />} />
+        <Route path="/platform/coverage" element={<Coverage />} />
+        <Route path="/platform/tuning" element={<Tuning />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route
           path="/"

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const TDIRPlatform = () => {
   const features = [
@@ -84,7 +85,7 @@ const TDIRPlatform = () => {
             ))}
           </ul>
 
-          <button style={{
+          <Link to="/platform" style={{
             backgroundColor: '#009900', /* Green similar to image */
             color: 'white',
             padding: '12px 32px',
@@ -93,13 +94,15 @@ const TDIRPlatform = () => {
             border: 'none',
             borderRadius: '50px',
             cursor: 'pointer',
-            transition: 'background-color 0.3s'
+            transition: 'background-color 0.3s',
+            textDecoration: 'none',
+            display: 'inline-block'
           }}
           onMouseOver={(e) => e.target.style.backgroundColor = '#00bb00'}
           onMouseOut={(e) => e.target.style.backgroundColor = '#009900'}
           >
             Discover the Platform
-          </button>
+          </Link>
         </motion.div>
 
         {/* Right Image Placeholder */}

@@ -1,0 +1,241 @@
+.platform-page {
+  padding: 20px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #e0e0e0;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Scanline Effect */
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  ),
+  linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.5;
+}
+
+.platform-hero {
+  text-align: center;
+  margin-bottom: 4rem;
+  position: relative;
+  z-index: 20;
+}
+
+.platform-page .cyber-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #00f3ff;
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.platform-page .cyber-subtitle {
+  font-size: 1.2rem;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4rem auto;
+  color: #a0a0a0;
+  line-height: 1.6;
+}
+
+.platform-section {
+  margin-bottom: 5rem;
+  position: relative;
+  z-index: 20;
+}
+
+.platform-section h2 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 2rem;
+  border-left: 4px solid #00f3ff;
+  padding-left: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: rgba(16, 20, 24, 0.8);
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  padding: 2rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: #00f3ff;
+  opacity: 0.5;
+}
+
+.feature-card:hover {
+  border-color: #00f3ff;
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+  transform: translateY(-5px);
+}
+
+.feature-card h3 {
+  color: #00f3ff;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+.feature-card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.feature-card ul li {
+  margin-bottom: 0.8rem;
+  padding-left: 1.5rem;
+  position: relative;
+  color: #ccc;
+}
+
+.feature-card ul li::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: #00f3ff;
+}
+
+.passive-box {
+  background: linear-gradient(135deg, rgba(0, 255, 0, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+  border: 1px solid #00ff00;
+  padding: 3rem;
+  border-radius: 12px;
+  text-align: center;
+  margin: 4rem 0;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
+  position: relative;
+  z-index: 20;
+}
+
+.passive-box h3 {
+  color: #00ff00;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+}
+
+.passive-box p {
+  font-size: 1.2rem;
+  color: #ccffcc;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.diagram-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 3rem;
+  background: rgba(0, 20, 40, 0.4);
+  border: 1px dashed rgba(0, 243, 255, 0.3);
+  border-radius: 12px;
+}
+
+.diagram-step {
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+}
+
+.diagram-box {
+  background: rgba(0, 243, 255, 0.05);
+  border: 1px solid #00f3ff;
+  padding: 1.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.diagram-arrow {
+  color: #00f3ff;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.explore-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 4rem;
+  position: relative;
+  z-index: 20;
+}
+
+.explore-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 2rem;
+  width: 300px;
+  font-size: 1.2rem;
+  text-decoration: none;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #00f3ff;
+  color: #fff;
+  border-radius: 0;
+  transition: all 0.3s ease;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.explore-btn:hover {
+  background: #00f3ff;
+  color: #000;
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+  .diagram-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .diagram-arrow {
+    transform: rotate(90deg);
+  }
+}
