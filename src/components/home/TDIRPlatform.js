@@ -101,7 +101,7 @@ const TDIRPlatform = () => {
           onMouseOver={(e) => e.target.style.backgroundColor = '#00bb00'}
           onMouseOut={(e) => e.target.style.backgroundColor = '#009900'}
           >
-            Discover the Platform
+            Understand the Platform
           </Link>
         </motion.div>
 

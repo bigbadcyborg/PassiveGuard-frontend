@@ -40,6 +40,22 @@ function AdminUsers() {
     }
   };
 
+  const handleDeleteUser = async (userId, username) => {
+    if (!window.confirm(`Are you sure you want to delete user "${username}"? This cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      const token = localStorage.getItem('access_token');
+      await axios.delete(`/api/admin/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchUsers(); // Refresh the list
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to delete user');
+    }
+  };
+
   if (loading) return <div className="spinner" />;
 
   return (
@@ -123,6 +139,14 @@ function AdminUsers() {
                               - Overdrive
                             </button>
                           )}
+                          
+                          <button 
+                            onClick={() => handleDeleteUser(user.id, user.username)}
+                            className="btn" 
+                            style={{ padding: '4px 8px', fontSize: '11px', borderColor: '#ff4444', color: '#ff4444', background: 'transparent', marginLeft: '5px' }}
+                          >
+                            Delete
+                          </button>
                         </>
                       )}
                     </div>

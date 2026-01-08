@@ -84,7 +84,7 @@ const Response = () => {
             {/* Mock JSON Response */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem', borderBottom: '1px solid #333', paddingBottom: '0.5rem' }}>
               <Database size={16} color="#bc13fe" />
-              <span style={{ color: '#666', fontSize: '0.9rem' }}>enrich_finding(finding) -> Output</span>
+              <span style={{ color: '#666', fontSize: '0.9rem' }}>enrich_finding(finding) -{'>'}  Output</span>
             </div>
             <pre style={{ color: '#ccc', overflowX: 'auto', fontSize: '0.9rem', lineHeight: '1.5' }}>
               {`{

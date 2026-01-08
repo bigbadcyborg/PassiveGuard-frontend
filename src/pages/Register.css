@@ -28,6 +28,37 @@
   font-weight: 400;
 }
 
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.2s;
+  box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.form-group input:focus {
+  border-color: #667eea;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
 .error-message {
   background-color: #fee;
   color: #c33;
@@ -134,3 +165,40 @@
 
 
 
+
+/* Plan selection styles */
+.plan-selection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.plan-card {
+  border: 2px solid #eee;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.plan-card:hover {
+  border-color: #667eea;
+}
+
+.plan-card.selected {
+  border-color: #667eea;
+  background-color: #f0f4ff;
+}
+
+.plan-name {
+  font-weight: bold;
+  display: block;
+  color: #333;
+}
+
+.plan-price {
+  font-size: 0.9em;
+  color: #666;
+}
