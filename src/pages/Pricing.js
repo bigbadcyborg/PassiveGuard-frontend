@@ -24,9 +24,9 @@ const PRICING_TIERS = [
   {
     id: 'overdrive',
     name: 'Overdrive',
-    price: { monthly: '$332', annual: '$3,990' },
+    price: { monthly: '$99', annual: '$950' },
     period: 'per month',
-    annualNote: '$3,990/year',
+    annualNote: '$950/year',
     description: 'Automation for growing projects.',
     features: [
       { text: 'Automated Recurring Scans', icon: 'auto', tooltip: 'Set up scans to run automatically on a schedule.' },

@@ -5,9 +5,16 @@ import './Register.css';
 
 const PLANS = {
   TRIAL: { id: 'trial', name: 'Trial', price: 'Free', planId: null },
-  SENTINEL: { id: 'sentinel', name: 'Sentinel', price: '$29.99/mo', planId: 'P-SENTINEL-PLACEHOLDER' },
-  OVERDRIVE: { id: 'overdrive', name: 'Overdrive', price: '$99.99/mo', planId: 'P-2WU47714HK420213SNFPXJ7Y' },
-  NEXUS: { id: 'nexus', name: 'Nexus', price: '$199.99/mo', planId: 'P-NEXUS-PLACEHOLDER' }
+  SENTINEL: { id: 'sentinel', name: 'Sentinel', price: 'Under Maintenance', planId: 'P-SENTINEL-PLACEHOLDER' },
+  OVERDRIVE: {
+    id: 'overdrive',
+    name: 'Overdrive',
+    priceMonthly: '$99/mo',
+    priceAnnual: '$950/yr (20% discount)',
+    planIdMonthly: 'P-2WU47714HK420213SNFPXJ7Y',
+    planIdAnnual: 'P-0WT31235DR558524CNFQIUDY',
+  },
+  NEXUS: { id: 'nexus', name: 'Nexus', price: 'Under Maintenance', planId: 'P-NEXUS-PLACEHOLDER' }
 };
 
 const initialOptions = {
@@ -25,6 +32,7 @@ function Register() {
     confirmPassword: '',
   });
   const [selectedPlan, setSelectedPlan] = useState(PLANS.TRIAL.id);
+  const [overdriveBilling, setOverdriveBilling] = useState('monthly'); // 'monthly' or 'annual'
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
@@ -188,7 +196,37 @@ function Register() {
                 className={`plan-card ${selectedPlan === plan.id ? 'selected' : ''}`}
               >
                 <span className="plan-name">{plan.name}</span>
-                <span className="plan-price">{plan.price}</span>
+                {plan.id === 'overdrive' ? (
+                  <>
+                    <span className="plan-price">{overdriveBilling === 'annual' ? plan.priceAnnual : plan.priceMonthly}</span>
+                    {selectedPlan === 'overdrive' && (
+                      <div style={{ marginTop: 8 }}>
+                        <label>
+                          <input
+                            type="radio"
+                            name="overdriveBilling"
+                            value="monthly"
+                            checked={overdriveBilling === 'monthly'}
+                            onChange={() => setOverdriveBilling('monthly')}
+                          />
+                          <span style={{ color: 'black' }}>Monthly</span>
+                        </label>
+                        <label style={{ marginLeft: 16 }}>
+                          <input
+                            type="radio"
+                            name="overdriveBilling"
+                            value="annual"
+                            checked={overdriveBilling === 'annual'}
+                            onChange={() => setOverdriveBilling('annual')}
+                          />
+                          <span style={{ color: 'black' }}>Annual</span>
+                        </label>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <span className="plan-price">{plan.price}</span>
+                )}
               </div>
             ))}
           </div>
@@ -207,28 +245,34 @@ function Register() {
             ) : (
                 <div style={{ marginTop: '20px', minHeight: '150px' }}>
                         <PayPalButtons
-                            key={selectedPlan}
-                            style={{ 
-                                shape: 'pill',
-                                color: 'gold',
-                                layout: 'vertical',
-                                label: 'paypal'
-                            }}
-                            onInit={(data, actions) => {
-                                console.log(`PayPal Button initialized for plan: ${selectedPlan}`, data);
-                            }}
-                            createSubscription={(data, actions) => {
-                                return actions.subscription.create({
-                                    'plan_id': PLANS[selectedPlan.toUpperCase()].planId
-                                });
-                            }}
-                            onApprove={(data, actions) => {
-                               handleRegister(selectedPlan, data.subscriptionID);
-                            }}
-                            onError={(err) => {
-                                console.error("PayPal Error:", err);
-                                setError("Payment failed to load. Please verify PayPal Client ID configuration.");
-                            }}
+                          key={selectedPlan + (selectedPlan === 'overdrive' ? '-' + overdriveBilling : '')}
+                          style={{ 
+                            shape: 'pill',
+                            color: 'gold',
+                            layout: 'vertical',
+                            label: 'paypal'
+                          }}
+                          onInit={(data, actions) => {
+                            console.log(`PayPal Button initialized for plan: ${selectedPlan}`, data);
+                          }}
+                          createSubscription={(data, actions) => {
+                            let planId;
+                            if (selectedPlan === 'overdrive') {
+                              planId = overdriveBilling === 'annual' ? PLANS.OVERDRIVE.planIdAnnual : PLANS.OVERDRIVE.planIdMonthly;
+                            } else {
+                              planId = PLANS[selectedPlan.toUpperCase()].planId;
+                            }
+                            return actions.subscription.create({
+                              'plan_id': planId
+                            });
+                          }}
+                          onApprove={(data, actions) => {
+                             handleRegister(selectedPlan, data.subscriptionID);
+                          }}
+                          onError={(err) => {
+                            console.error("PayPal Error:", err);
+                            setError("Payment failed to load. Please verify PayPal Client ID configuration.");
+                          }}
                         />
                 </div>
             )}
