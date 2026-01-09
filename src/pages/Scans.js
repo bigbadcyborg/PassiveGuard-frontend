@@ -59,6 +59,7 @@ function Scans() {
   });
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const isSentinel = user.role === 'sentinel';
+  const isTrial = user.role === 'trial';
   const canScheduleScans = user.role === 'overdrive' || user.role === 'nexus' || user.role === 'admin';
   console.log("Scans component initialized", { username: user.username, role: user.role, isSentinel });
 
@@ -431,6 +432,16 @@ function Scans() {
 
   return (
     <div className="scans-page">
+
+      {/* Upgrade button for trial users only */}
+      {isTrial && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+          <button className="btn btn-primary" onClick={() => navigate('/pricing')}>
+            Upgrade Now
+          </button>
+        </div>
+      )}
+
       <div className="scans-header">
         <h1>Vulnerability Scans</h1>
         <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
@@ -929,6 +940,7 @@ function Scans() {
                     </td>
                     <td>{formatDuration(scan.duration)}</td>
                     <td>
+                      <span style={{ fontWeight: 'bold', marginRight: '8px' }}>Vulnerability Severities:</span>
                       <span className="badge badge-high">{scan.high_severity}</span>
                       <span className="badge badge-medium">{scan.medium_severity}</span>
                       <span className="badge badge-low">{scan.low_severity}</span>

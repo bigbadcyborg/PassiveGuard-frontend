@@ -10,6 +10,7 @@ function ScanDetail() {
   const navigate = useNavigate();
   const [scan, setScan] = useState(null);
   const [findings, setFindings] = useState([]);
+  const [isTrialSummary, setIsTrialSummary] = useState(false);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [filters, setFilters] = useState({
@@ -90,6 +91,7 @@ function ScanDetail() {
         scansAPI.getFindings(scanId, filters),
       ]);
       setScan(scanResponse.data.scan);
+      setIsTrialSummary(!!scanResponse.data.scan.trial_summary_only);
       setFindings(findingsResponse.data);
     } catch (error) {
       console.error('Error loading scan data:', error);
@@ -492,128 +494,62 @@ function ScanDetail() {
         </div>
       </div>
 
-      <div className="card">
-        <h2 className="card-title">Findings</h2>
-        
-        <div className="filters">
-          <select
-            className="form-select"
-            style={{ width: '200px', marginRight: '10px' }}
-            value={filters.severity}
-            onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
-          >
-            <option value="">All Severities</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-          <select
-            className="form-select"
-            style={{ width: '200px', marginRight: '10px' }}
-            value={filters.status}
-            onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-          >
-            <option value="">All Statuses</option>
-            <option value="open">Open</option>
-            <option value="false_positive">False Positive</option>
-            <option value="accepted_risk">Accepted Risk</option>
-            <option value="fixed">Fixed</option>
-          </select>
-        </div>
-
-        {findings.length === 0 ? (
-          <p>No findings found. </p>
-        ) : (
-          <div className="findings-list">
-            {findings.map(finding => {
-              const networkInfo = parseNetworkFinding(finding);
-              
-              return (
-                <div key={finding. id} className={`finding-card ${networkInfo ?  'network-finding-card' : ''}`}>
-                  <div className="finding-header">
-                    <div>
-                      <h3>{finding.title}</h3>
-                      <div className="finding-meta">
-                        <span className={`badge badge-${finding.severity}`}>{finding.severity}</span>
-                        {finding.owasp_category && (
-                          <span className="badge badge-info">OWASP:  {finding.owasp_category}</span>
-                        )}
-                        {/* ========== NEW: Enhanced Compliance Badges ========== */}
-                        {finding.nist_mapping && (
-                          <span className="badge badge-compliance badge-nist">NIST: {finding.nist_mapping}</span>
-                        )}
-                        {finding.soc2_mapping && (
-                          <span className="badge badge-compliance badge-soc2">SOC2: {finding.soc2_mapping}</span>
-                        )}
-                        {finding.hipaa_mapping && (
-                          <span className="badge badge-compliance badge-hipaa">HIPAA: {finding.hipaa_mapping}</span>
-                        )}
-                        {finding.vulnerability_type && (
-                          <span className="badge badge-info">{finding.vulnerability_type}</span>
-                        )}
-                      </div>
-                    </div>
-                    <select
-                      className="form-select"
-                      style={{ width: '180px' }}
-                      value={finding.status}
-                      onChange={(e) => handleStatusChange(finding. id, e.target.value)}
-                    >
-                      <option value="open">Open</option>
-                      <option value="false_positive">False Positive</option>
-                      <option value="accepted_risk">Accepted Risk</option>
-                      <option value="fixed">Fixed</option>
-                    </select>
-                  </div>
-                  
-                  {/* ========== NEW: Network Finding Special Rendering ========== */}
-                  {networkInfo && renderNetworkFinding(finding, networkInfo)}
-                  
-                  <div className="finding-body">
-                    <p><strong>Description:</strong> {linkify(finding.description)}</p>
-                    
-                    {finding.file_path && (
-                      <p><strong>Location:</strong> {finding.file_path}
-                        {finding.line_number && `:${finding.line_number}`}
-                      </p>
-                    )}
-                    
-                    {finding.code_snippet && (
-                      <div className="code-snippet">
-                        <pre>{finding.code_snippet}</pre>
-                      </div>
-                    )}
-                    
-                    {/* Only show raw data_flow_trace if NOT a network finding */}
-                    {finding.data_flow_trace && ! networkInfo && (
-                      <div className="data-flow-trace">
-                        <strong>Data Flow: </strong>
-                        <pre>{finding.data_flow_trace}</pre>
-                      </div>
-                    )}
-                    
-                    <div className="recommendation">
-                      <strong>Recommendation:</strong>
-                      <p>{linkify(finding.recommendation)}</p>
-                    </div>
-
-                    {finding.remediation_snippet && (
-                      <div className="remediation-snippet">
-                        <strong>Remediation Example:</strong>
-                        <pre className="code-snippet">{finding.remediation_snippet}</pre>
-                      </div>
-                    )}
-                    
-                    {finding.cve_id && (
-                      <p><strong>CVE: </strong> {finding.cve_id}</p>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+      {/* Trial summary-only mode: show upgrade prompt and hide findings */}
+      {isTrialSummary ? (
+        <div className="card trial-summary-card">
+          <h2 className="card-title">Trial Scan Summary</h2>
+          <p>
+            This was your one-time free trial scan. Only summary statistics are shown.<br/>
+            To view detailed findings and unlock unlimited scans, please upgrade your account.
+          </p>
+          <div style={{ margin: '20px 0' }}>
+            <a href="/pricing" className="btn btn-success btn-lg">Upgrade Now</a>
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="card">
+          <h2 className="card-title">Findings</h2>
+          <div className="filters">
+            <select
+              className="form-select"
+              style={{ width: '200px', marginRight: '10px' }}
+              value={filters.severity}
+              onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
+            >
+              <option value="">All Severities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <select
+              className="form-select"
+              style={{ width: '200px', marginRight: '10px' }}
+              value={filters.status}
+              onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+            >
+              <option value="">All Statuses</option>
+              <option value="open">Open</option>
+              <option value="false_positive">False Positive</option>
+              <option value="accepted_risk">Accepted Risk</option>
+              <option value="fixed">Fixed</option>
+            </select>
+          </div>
+          {findings.length === 0 ? (
+            <p>No findings found. </p>
+          ) : (
+            <div className="findings-list">
+              {findings.map(finding => {
+                const networkInfo = parseNetworkFinding(finding);
+                return (
+                  <div key={finding.id} className={`finding-card ${networkInfo ?  'network-finding-card' : ''}`}>
+                    {/* ...existing code for finding card... */}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

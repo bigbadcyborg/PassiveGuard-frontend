@@ -14,7 +14,7 @@ const PLANS = {
     planIdMonthly: 'P-2WU47714HK420213SNFPXJ7Y',
     planIdAnnual: 'P-0WT31235DR558524CNFQIUDY',
   },
-  NEXUS: { id: 'nexus', name: 'Nexus', price: 'Under Maintenance', planId: 'P-NEXUS-PLACEHOLDER' }
+  NEXUS: { id: 'nexus', name: 'Nexus', price: 'Coming Soon', planId: 'P-NEXUS-PLACEHOLDER' }
 };
 
 const initialOptions = {

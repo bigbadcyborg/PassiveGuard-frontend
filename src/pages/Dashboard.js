@@ -8,6 +8,7 @@ function Dashboard() {
   const [stats, setStats] = useState(null);
   const [recentScans, setRecentScans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
     loadData();
@@ -58,6 +59,14 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
+      {/* Upgrade button for trial users only */}
+      {user.role === 'trial' && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+          <button className="btn btn-primary" onClick={() => window.location.href = '/pricing'}>
+            Upgrade Now
+          </button>
+        </div>
+      )}
       <div className="dashboard-header">
         <h1>Dashboard</h1>
       </div>
