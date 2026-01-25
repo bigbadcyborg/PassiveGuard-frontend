@@ -92,5 +92,15 @@ export const scheduledScansAPI = {
   getHistory: (id) => api.get(`/scheduled-scans/${id}/history`),
 };
 
-export default api;
+export const discoveryScansAPI = {
+  list: () => api.get('/discovery-scans'),
+  get: (scanId) => api.get(`/discovery-scans/${scanId}`),
+  create: (data) => api.post('/discovery-scans', data),
+};
 
+export const externalAssetsAPI = {
+  list: () => api.get('/external-assets'),
+  get: (assetId) => api.get(`/external-assets/${assetId}`),
+};
+
+export default api;
