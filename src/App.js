@@ -14,6 +14,8 @@ import MonitoringMaintenance from './pages/docs/MonitoringMaintenance';
 import Dashboard from './pages/Dashboard';
 import Scans from './pages/Scans';
 import ScanDetail from './pages/ScanDetail';
+import Onboarding from './pages/Onboarding';
+import ExternalAssets from './pages/ExternalAssets';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyEmail from './pages/VerifyEmail';
@@ -93,6 +95,22 @@ function MainContent({ isAuthenticated }) {
           element={
             <PrivateRoute>
               <Scans />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/onboarding"
+          element={
+            <PrivateRoute>
+              <Onboarding />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/external-assets"
+          element={
+            <PrivateRoute>
+              <ExternalAssets />
             </PrivateRoute>
           }
         />
@@ -195,4 +213,3 @@ function App() {
 }
 
 export default App;
-
