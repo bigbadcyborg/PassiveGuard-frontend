@@ -100,6 +100,15 @@ export const alertsAPI = {
 export const changeDetectionAPI = {
   list: (scanId) => api.get(`/scans/${scanId}/changes`),
   listClinicTimeline: (clinicId) => api.get(`/clinics/${clinicId}/changes`),
+export const discoveryScansAPI = {
+  list: () => api.get('/discovery-scans'),
+  get: (scanId) => api.get(`/discovery-scans/${scanId}`),
+  create: (data) => api.post('/discovery-scans', data),
+};
+
+export const externalAssetsAPI = {
+  list: () => api.get('/external-assets'),
+  get: (assetId) => api.get(`/external-assets/${assetId}`),
 };
 
 export default api;

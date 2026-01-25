@@ -81,6 +81,8 @@ function Navbar() {
                 </div>
               </div>
               <Link to="/scans" className="navbar-link">Scans</Link>
+              <Link to="/external-assets" className="navbar-link">External Assets</Link>
+              <Link to="/onboarding" className="navbar-link">Onboarding</Link>
               <Link to="/agents" className="navbar-link">Agents</Link>
               <Link to="/alerts" className="navbar-link navbar-alerts-link">
                 Alerts

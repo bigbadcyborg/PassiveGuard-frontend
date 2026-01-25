@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { scansAPI, utilsAPI, scheduledScansAPI } from '../services/api';
+import { scansAPI, utilsAPI, scheduledScansAPI, discoveryScansAPI } from '../services/api';
 import socketService from '../services/socket';
 import { formatDuration } from '../utils/format';
 import './Scans.css';
@@ -46,6 +46,16 @@ const SCAN_TYPE_INFO = {
       'Flow Anomaly Detection: Identifies port scans, brute-force attempts, and C2 beaconing.',
       'Protocol-Aware Parsing: Verb-level analysis for FTP, SMTP, and SMBv1.'
     ]
+  },
+  external_discovery: {
+    title: 'External Discovery',
+    description: 'Maps internet-facing domains, services, and exposure details without requiring agents.',
+    details: [
+      'Enumerates subdomains and DNS records.',
+      'Identifies exposed IPs and open services.',
+      'Collects TLS and HTTP header metadata for exposure baselines.',
+      'Tracks first-seen and last-seen timestamps.'
+    ]
   }
 };
 
@@ -88,13 +98,15 @@ function Scans() {
 
   const [formData, setFormData] = useState({
     name: '',
+    scan_mode: 'internal',
     target_path: '',
     scan_type: 'full',
     scan_location: isSentinel ? 'agent' : 'hub',
     scan_source: 'filesystem', // 'filesystem' or 'repository'
     repo_username: '',
     repo_token: '',
-    is_private_repo: false
+    is_private_repo: false,
+    external_domain: ''
   });
 
   // Folder Picker State
@@ -376,12 +388,61 @@ function Scans() {
     setShowPicker(false);
   };
 
+  const buildScanPayload = (data) => {
+    if (data.scan_mode === 'external') {
+      return {
+        name: data.name,
+        domain: data.external_domain,
+        scan_type: data.scan_type
+      };
+    }
+
+    return {
+      name: data.name,
+      target_path: data.target_path,
+      scan_type: data.scan_type,
+      scan_location: data.scan_location,
+      scan_source: data.scan_source,
+      repo_username: data.repo_username,
+      repo_token: data.repo_token,
+      is_private_repo: data.is_private_repo
+    };
+  };
+
+  const handleScanModeChange = (mode) => {
+    setFormData((prev) => ({
+      ...prev,
+      scan_mode: mode,
+      scan_type: mode === 'external' ? 'external_discovery' : 'full',
+      target_path: '',
+      scan_source: 'filesystem',
+      repo_username: '',
+      repo_token: '',
+      is_private_repo: false,
+      external_domain: mode === 'external' ? prev.external_domain : ''
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await scansAPI.create(formData);
-      setFormData({ name: '', target_path: '', scan_type: 'full', scan_location: isSentinel ? 'agent' : 'hub' });
+      const payload = buildScanPayload(formData);
+      const response = formData.scan_mode === 'external'
+        ? await discoveryScansAPI.create(payload)
+        : await scansAPI.create(payload);
+      setFormData({
+        name: '',
+        scan_mode: 'internal',
+        target_path: '',
+        scan_type: 'full',
+        scan_location: isSentinel ? 'agent' : 'hub',
+        scan_source: 'filesystem',
+        repo_username: '',
+        repo_token: '',
+        is_private_repo: false,
+        external_domain: ''
+      });
       setShowForm(false);
       
       // Automatically navigate to the new scan's detail page
@@ -464,25 +525,57 @@ function Scans() {
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Scan Execution</label>
-              <select
-                className="form-select"
-                value={formData.scan_location}
-                onChange={(e) => setFormData({ ...formData, scan_location: e.target.value })}
-                disabled={isSentinel}
-              >
-                <option value="agent">Edge Agent (Local Scanning)</option>
-                {!isSentinel && <option value="hub">Hub (Cloud Scanning)</option>}
-              </select>
+              <label className="form-label">Scan Mode</label>
+              <div style={{ display: 'flex', gap: '20px', marginTop: '5px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+                  <input
+                    type="radio"
+                    name="scan_mode"
+                    value="internal"
+                    checked={formData.scan_mode === 'internal'}
+                    onChange={() => handleScanModeChange('internal')}
+                  />
+                  Internal Application
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+                  <input
+                    type="radio"
+                    name="scan_mode"
+                    value="external"
+                    checked={formData.scan_mode === 'external'}
+                    onChange={() => handleScanModeChange('external')}
+                  />
+                  External Domain Discovery
+                </label>
+              </div>
               <small style={{ color: 'var(--text-secondary)', marginTop: '5px', display: 'block' }}>
-                {formData.scan_location === 'agent' 
-                  ? "Scan will run on your local machine via the Edge Agent. Your source code stays local." 
-                  : "Scan will run on the PassiveGuard server."}
-                {isSentinel && " (Sentinel tier is restricted to Edge Agent scans)"}
+                {formData.scan_mode === 'external'
+                  ? 'Discover public-facing assets without requiring a local agent or file paths.'
+                  : 'Scan source code, configuration, and traffic using local or hub execution.'}
               </small>
             </div>
+            {formData.scan_mode === 'internal' && (
+              <div className="form-group">
+                <label className="form-label">Scan Execution</label>
+                <select
+                  className="form-select"
+                  value={formData.scan_location}
+                  onChange={(e) => setFormData({ ...formData, scan_location: e.target.value })}
+                  disabled={isSentinel}
+                >
+                  <option value="agent">Edge Agent (Local Scanning)</option>
+                  {!isSentinel && <option value="hub">Hub (Cloud Scanning)</option>}
+                </select>
+                <small style={{ color: 'var(--text-secondary)', marginTop: '5px', display: 'block' }}>
+                  {formData.scan_location === 'agent' 
+                    ? "Scan will run on your local machine via the Edge Agent. Your source code stays local." 
+                    : "Scan will run on the PassiveGuard server."}
+                  {isSentinel && " (Sentinel tier is restricted to Edge Agent scans)"}
+                </small>
+              </div>
+            )}
 
-            {(formData.scan_location === 'hub' || formData.scan_location === 'agent') && (
+            {formData.scan_mode === 'internal' && (formData.scan_location === 'hub' || formData.scan_location === 'agent') && (
               <div className="form-group">
                 <label className="form-label">Source Type</label>
                 <div style={{ display: 'flex', gap: '20px', marginTop: '5px' }}>
@@ -510,7 +603,19 @@ function Scans() {
               </div>
             )}
 
-            {formData.scan_source === 'repository' ? (
+            {formData.scan_mode === 'external' ? (
+              <div className="form-group">
+                <label className="form-label">External Domain</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.external_domain}
+                  onChange={(e) => setFormData({ ...formData, external_domain: e.target.value })}
+                  placeholder="example-clinic.com"
+                  required
+                />
+              </div>
+            ) : formData.scan_source === 'repository' ? (
               <>
                 <div className="form-group">
                   <label className="form-label">Repository URL</label>
@@ -587,10 +692,16 @@ function Scans() {
                 value={formData.scan_type}
                 onChange={(e) => setFormData({ ...formData, scan_type: e.target.value })}
               >
-                <option value="full">Full Scan (Code + Config + Dependencies + Traffic)</option>
-                <option value="code">Code Analysis Only</option>
-                <option value="config">Configuration Analysis Only</option>
-                <option value="traffic">Network Traffic Analysis Only</option>
+                {formData.scan_mode === 'external' ? (
+                  <option value="external_discovery">External Discovery (Domains + Services)</option>
+                ) : (
+                  <>
+                    <option value="full">Full Scan (Code + Config + Dependencies + Traffic)</option>
+                    <option value="code">Code Analysis Only</option>
+                    <option value="config">Configuration Analysis Only</option>
+                    <option value="traffic">Network Traffic Analysis Only</option>
+                  </>
+                )}
               </select>
             </div>
 
@@ -1046,4 +1157,3 @@ function Scans() {
 }
 
 export default Scans;
-
