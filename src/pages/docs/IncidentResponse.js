@@ -97,16 +97,16 @@ const IncidentResponse = () => {
               <h3 style={{ color: '#00f3ff', fontSize: '1.2rem' }}>Risk Assessment and Compliance</h3>
             </div>
             <p style={{ color: '#ccc', lineHeight: '1.6' }}>
-              Comprehensive risk management and compliance monitoring ensure ongoing security posture and regulatory adherence.
+              Comprehensive risk management and compliance monitoring support risk management for regulatory obligations and may be relevant for audits.
             </p>
             <div style={{ marginTop: '1.5rem' }}>
               <h4 style={{ color: '#00f3ff', fontSize: '1rem', marginBottom: '0.5rem' }}>Risk & Compliance Features:</h4>
               <ul style={{ color: '#ccc', fontSize: '0.9rem', lineHeight: '1.4', listStyle: 'none' }}>
                 <li>• Continuous Risk Monitoring</li>
-                <li>• Automated Compliance</li>
+                <li>• Compliance Mapping Support</li>
                 <li>• Vulnerability Management</li>
                 <li>• Audit Trail Generation</li>
-                <li>• Regulatory Reporting</li>
+                <li>• Regulatory Reporting Support</li>
               </ul>
             </div>
           </motion.div>
