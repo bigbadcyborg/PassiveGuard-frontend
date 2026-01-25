@@ -14,6 +14,8 @@ import MonitoringMaintenance from './pages/docs/MonitoringMaintenance';
 import Dashboard from './pages/Dashboard';
 import Scans from './pages/Scans';
 import ScanDetail from './pages/ScanDetail';
+import Onboarding from './pages/Onboarding';
+import ExternalAssets from './pages/ExternalAssets';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyEmail from './pages/VerifyEmail';
@@ -28,12 +30,19 @@ import BlogPost from './pages/BlogPost';
 import Agents from './pages/Agents';
 import DebugAgents from './pages/DebugAgents';
 import Reports from './pages/Reports';
+import Alerts from './pages/Alerts';
 import Workflows from './pages/features/Workflows';
 import Response from './pages/features/Response';
 import Integrations from './pages/features/Integrations';
 import PlatformOverview from './pages/PlatformOverview';
 import Coverage from './pages/Coverage';
 import Tuning from './pages/Tuning';
+import MspDashboard from './pages/msp/MspDashboard';
+import Clinics from './pages/msp/Clinics';
+import ClinicDetail from './pages/msp/ClinicDetail';
+import ClinicReports from './pages/msp/ClinicReports';
+import ClinicReportDetail from './pages/msp/ClinicReportDetail';
+import { ClinicProvider } from './context/ClinicContext';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -98,6 +107,54 @@ function MainContent({ isAuthenticated }) {
           }
         />
         <Route
+          path="/msp"
+          element={
+            <PrivateRoute>
+              <MspDashboard />
+          path="/onboarding"
+          element={
+            <PrivateRoute>
+              <Onboarding />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/msp/clinics"
+          element={
+            <PrivateRoute>
+              <Clinics />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/msp/clinics/:clinicId"
+          element={
+            <PrivateRoute>
+              <ClinicDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/msp/clinics/:clinicId/reports"
+          element={
+            <PrivateRoute>
+              <ClinicReports />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/msp/clinics/:clinicId/reports/:reportId"
+          element={
+            <PrivateRoute>
+              <ClinicReportDetail />
+          path="/external-assets"
+          element={
+            <PrivateRoute>
+              <ExternalAssets />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/agents"
           element={
             <PrivateRoute>
@@ -110,6 +167,10 @@ function MainContent({ isAuthenticated }) {
           element={
             <PrivateRoute>
               <Reports />
+          path="/alerts"
+          element={
+            <PrivateRoute>
+              <Alerts />
             </PrivateRoute>
           }
         />
@@ -196,8 +257,10 @@ function App() {
     <Router basename={process.env.PUBLIC_URL}>
       <div className="App">
         <div className="global-scanline"></div>
-        <Navbar />
-        <MainContent isAuthenticated={isAuthenticated} />
+        <ClinicProvider isAuthenticated={isAuthenticated}>
+          <Navbar />
+          <MainContent isAuthenticated={isAuthenticated} />
+        </ClinicProvider>
       </div>
     </Router>
   );

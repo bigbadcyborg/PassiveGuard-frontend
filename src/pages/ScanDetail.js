@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { scansAPI, findingsAPI } from '../services/api';
+import { scansAPI, findingsAPI, changeDetectionAPI } from '../services/api';
 import socketService from '../services/socket';
 import { formatDuration } from '../utils/format';
 import './ScanDetail.css';
@@ -13,6 +13,8 @@ function ScanDetail() {
   const [isTrialSummary, setIsTrialSummary] = useState(false);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
+  const [timeline, setTimeline] = useState([]);
+  const [timelineLoading, setTimelineLoading] = useState(true);
   const [filters, setFilters] = useState({
     severity: '',
     status: '',
@@ -26,6 +28,10 @@ function ScanDetail() {
   useEffect(() => {
     loadScanData();
   }, [scanId, filters]);
+
+  useEffect(() => {
+    loadTimeline();
+  }, [scanId]);
 
   // Live Timer for Running Scans
   useEffect(() => {
@@ -100,6 +106,19 @@ function ScanDetail() {
     }
   };
 
+  const loadTimeline = async () => {
+    setTimelineLoading(true);
+    try {
+      const response = await changeDetectionAPI.list(scanId);
+      const timelineEntries = response.data.timeline || response.data || [];
+      setTimeline(timelineEntries);
+    } catch (error) {
+      console.error('Error loading exposure timeline:', error);
+    } finally {
+      setTimelineLoading(false);
+    }
+  };
+
   const handleStatusChange = async (findingId, newStatus) => {
     try {
       await findingsAPI.updateStatus(findingId, newStatus);
@@ -164,6 +183,17 @@ function ScanDetail() {
     } finally {
       setExporting(false);
     }
+  };
+
+  const formatTimelineWindow = (entry) => {
+    if (entry.previous_scan_id && entry.current_scan_id) {
+      return `Scan ${entry.previous_scan_id} → ${entry.current_scan_id}`;
+    }
+    if (entry.range_label) return entry.range_label;
+    if (entry.detected_at) {
+      return new Date(entry.detected_at).toLocaleString();
+    }
+    return 'Recent scan window';
   };
 
   // ========== NEW:  Network Finding Parser ==========
@@ -492,6 +522,54 @@ function ScanDetail() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="card exposure-timeline-card">
+        <h3 className="card-title">Exposure Timeline</h3>
+        <p className="card-subtitle">Scan-to-scan diffs for this clinic.</p>
+        {timelineLoading ? (
+          <p>Loading exposure timeline...</p>
+        ) : timeline.length === 0 ? (
+          <p>No change detections recorded yet.</p>
+        ) : (
+          <div className="timeline-list">
+            {timeline.map((entry) => (
+              <div key={entry.id || entry.detected_at} className="timeline-entry">
+                <div className="timeline-header">
+                  <span className="timeline-window">{formatTimelineWindow(entry)}</span>
+                  <span className="timeline-clinic">
+                    {entry.clinic || entry.clinic_name || scan.clinic || scan.target_path}
+                  </span>
+                </div>
+                <div className="timeline-body">
+                  <div>
+                    <h4>What Changed</h4>
+                    <p>{entry.what_changed || entry.change_summary || 'No change summary provided.'}</p>
+                  </div>
+                  <div>
+                    <h4>Why It Matters</h4>
+                    <p>{entry.why_it_matters || entry.impact || 'No impact details provided.'}</p>
+                  </div>
+                  <div>
+                    <h4>Evidence</h4>
+                    {entry.evidence_link || entry.evidence_url ? (
+                      <a
+                        href={entry.evidence_link || entry.evidence_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="linkified"
+                      >
+                        View diff evidence →
+                      </a>
+                    ) : (
+                      <p>No evidence link available.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Trial summary-only mode: show upgrade prompt and hide findings */}

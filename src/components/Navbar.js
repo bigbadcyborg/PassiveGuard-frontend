@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useClinicContext } from '../context/ClinicContext';
+import { alertsAPI } from '../services/api';
 import './Navbar.css';
 
 function Navbar() {
@@ -7,6 +9,8 @@ function Navbar() {
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const isAuthenticated = !!localStorage.getItem('access_token');
+  const { clinics, selectedClinicId, setSelectedClinicId } = useClinicContext();
+  const [highRiskCount, setHighRiskCount] = useState(0);
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
@@ -14,11 +18,53 @@ function Navbar() {
     navigate('/home');
   };
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setHighRiskCount(0);
+      return;
+    }
+
+    const loadAlerts = async () => {
+      try {
+        const response = await alertsAPI.list({ status: 'open' });
+        const responseAlerts = response.data.alerts || response.data || [];
+        const highRiskAlerts = responseAlerts.filter((alert) => {
+          const severity = (alert.severity || alert.risk || alert.priority || '').toLowerCase();
+          return severity === 'high' || severity === 'critical';
+        });
+        setHighRiskCount(highRiskAlerts.length);
+      } catch (error) {
+        console.error('Error loading alert badge count:', error);
+      }
+    };
+
+    loadAlerts();
+  }, [isAuthenticated]);
+
   // Don't show regular Navbar on Home page if not authenticated
   // as the Home page has its own cyberpunk header
   if (location.pathname === '/home' && !isAuthenticated) {
     return null;
   }
+
+  const handleClinicChange = (event) => {
+    const nextClinicId = event.target.value;
+    setSelectedClinicId(nextClinicId);
+    const clinicPathMatch = location.pathname.match(/\/msp\/clinics\/([^/]+)/);
+    if (clinicPathMatch && nextClinicId) {
+      navigate(location.pathname.replace(clinicPathMatch[1], nextClinicId));
+      return;
+    }
+
+    if (location.pathname.startsWith('/msp') && nextClinicId) {
+      navigate(`/msp/clinics/${nextClinicId}`);
+    }
+  };
+
+  const selectedClinicName =
+    clinics.find((clinic) => (clinic.id || clinic.clinic_id) === selectedClinicId)?.name ||
+    clinics.find((clinic) => (clinic.id || clinic.clinic_id) === selectedClinicId)?.clinic_name ||
+    '';
 
   return (
     <nav className="navbar">
@@ -29,7 +75,45 @@ function Navbar() {
         <div className="navbar-links">
           {isAuthenticated ? (
             <>
+              <div className="clinic-switcher">
+                <span className="clinic-switcher-label">Clinic</span>
+                <select
+                  className="clinic-switcher-select"
+                  value={selectedClinicId}
+                  onChange={handleClinicChange}
+                >
+                  <option value="">
+                    {clinics.length > 0 ? 'Select clinic' : 'No clinics'}
+                  </option>
+                  {clinics.map((clinic) => {
+                    const clinicId = clinic.id || clinic.clinic_id;
+                    const clinicName = clinic.name || clinic.clinic_name || clinicId;
+                    return (
+                      <option key={clinicId} value={clinicId}>
+                        {clinicName}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
               <Link to="/" className="navbar-link">Dashboard</Link>
+              <div className="dropdown">
+                <Link to="/msp" className="navbar-link">MSP</Link>
+                <div className="dropdown-content">
+                  <Link to="/msp" className="dropdown-item">Dashboard</Link>
+                  <Link to="/msp/clinics" className="dropdown-item">Clinics</Link>
+                  {selectedClinicId && (
+                    <>
+                      <Link to={`/msp/clinics/${selectedClinicId}`} className="dropdown-item">
+                        {selectedClinicName || 'Selected Clinic'}
+                      </Link>
+                      <Link to={`/msp/clinics/${selectedClinicId}/reports`} className="dropdown-item">
+                        Reports
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
               <div className="dropdown">
                 <Link to="/features/workflows" className="navbar-link">Workflows</Link>
                 <div className="dropdown-content">
@@ -57,7 +141,17 @@ function Navbar() {
               </div>
               <Link to="/scans" className="navbar-link">Scans</Link>
               <Link to="/reports" className="navbar-link">Reports</Link>
+              <Link to="/external-assets" className="navbar-link">External Assets</Link>
+              <Link to="/onboarding" className="navbar-link">Onboarding</Link>
               <Link to="/agents" className="navbar-link">Agents</Link>
+              <Link to="/alerts" className="navbar-link navbar-alerts-link">
+                Alerts
+                {highRiskCount > 0 && (
+                  <span className="navbar-badge" aria-label={`${highRiskCount} high risk alerts`}>
+                    {highRiskCount}
+                  </span>
+                )}
+              </Link>
               <Link to="/pricing" className="navbar-link">Pricing</Link>
               <Link to="/blog" className="navbar-link">Blog</Link>
               {user.role === 'admin' && (
