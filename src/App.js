@@ -14,6 +14,8 @@ import MonitoringMaintenance from './pages/docs/MonitoringMaintenance';
 import Dashboard from './pages/Dashboard';
 import Scans from './pages/Scans';
 import ScanDetail from './pages/ScanDetail';
+import Onboarding from './pages/Onboarding';
+import ExternalAssets from './pages/ExternalAssets';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import VerifyEmail from './pages/VerifyEmail';
@@ -27,6 +29,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Agents from './pages/Agents';
 import DebugAgents from './pages/DebugAgents';
+import Alerts from './pages/Alerts';
 import Workflows from './pages/features/Workflows';
 import Response from './pages/features/Response';
 import Integrations from './pages/features/Integrations';
@@ -107,6 +110,10 @@ function MainContent({ isAuthenticated }) {
           element={
             <PrivateRoute>
               <MspDashboard />
+          path="/onboarding"
+          element={
+            <PrivateRoute>
+              <Onboarding />
             </PrivateRoute>
           }
         />
@@ -139,6 +146,10 @@ function MainContent({ isAuthenticated }) {
           element={
             <PrivateRoute>
               <ClinicReportDetail />
+          path="/external-assets"
+          element={
+            <PrivateRoute>
+              <ExternalAssets />
             </PrivateRoute>
           }
         />
@@ -147,6 +158,14 @@ function MainContent({ isAuthenticated }) {
           element={
             <PrivateRoute>
               <Agents />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/alerts"
+          element={
+            <PrivateRoute>
+              <Alerts />
             </PrivateRoute>
           }
         />

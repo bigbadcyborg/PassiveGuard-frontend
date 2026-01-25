@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useClinicContext } from '../context/ClinicContext';
+import { alertsAPI } from '../services/api';
 import './Navbar.css';
 
 function Navbar() {
@@ -9,12 +10,36 @@ function Navbar() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const isAuthenticated = !!localStorage.getItem('access_token');
   const { clinics, selectedClinicId, setSelectedClinicId } = useClinicContext();
+  const [highRiskCount, setHighRiskCount] = useState(0);
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     navigate('/home');
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setHighRiskCount(0);
+      return;
+    }
+
+    const loadAlerts = async () => {
+      try {
+        const response = await alertsAPI.list({ status: 'open' });
+        const responseAlerts = response.data.alerts || response.data || [];
+        const highRiskAlerts = responseAlerts.filter((alert) => {
+          const severity = (alert.severity || alert.risk || alert.priority || '').toLowerCase();
+          return severity === 'high' || severity === 'critical';
+        });
+        setHighRiskCount(highRiskAlerts.length);
+      } catch (error) {
+        console.error('Error loading alert badge count:', error);
+      }
+    };
+
+    loadAlerts();
+  }, [isAuthenticated]);
 
   // Don't show regular Navbar on Home page if not authenticated
   // as the Home page has its own cyberpunk header
@@ -115,7 +140,17 @@ function Navbar() {
                 </div>
               </div>
               <Link to="/scans" className="navbar-link">Scans</Link>
+              <Link to="/external-assets" className="navbar-link">External Assets</Link>
+              <Link to="/onboarding" className="navbar-link">Onboarding</Link>
               <Link to="/agents" className="navbar-link">Agents</Link>
+              <Link to="/alerts" className="navbar-link navbar-alerts-link">
+                Alerts
+                {highRiskCount > 0 && (
+                  <span className="navbar-badge" aria-label={`${highRiskCount} high risk alerts`}>
+                    {highRiskCount}
+                  </span>
+                )}
+              </Link>
               <Link to="/pricing" className="navbar-link">Pricing</Link>
               <Link to="/blog" className="navbar-link">Blog</Link>
               {user.role === 'admin' && (
