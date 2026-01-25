@@ -69,14 +69,14 @@ const AdvancedFeatures = () => {
               <h3 style={{ color: '#00f3ff', fontSize: '1.2rem' }}>Compliance and Governance</h3>
             </div>
             <p style={{ color: '#ccc', lineHeight: '1.6' }}>
-              Comprehensive compliance management ensures regulatory adherence and organizational governance across all operations.
+              Comprehensive compliance management supports risk management for regulatory obligations and organizational governance across operations.
             </p>
             <div style={{ marginTop: '1.5rem' }}>
-              <h4 style={{ color: '#00f3ff', fontSize: '1rem', marginBottom: '0.5rem' }}>Compliance Features:</h4>
+              <h4 style={{ color: '#00f3ff', fontSize: '1rem', marginBottom: '0.5rem' }}>Compliance Support:</h4>
               <ul style={{ color: '#ccc', fontSize: '0.9rem', lineHeight: '1.4', listStyle: 'none' }}>
-                <li>• Regulatory Framework Support</li>
-                <li>• Audit Trail Generation</li>
-                <li>• Compliance Reporting</li>
+                <li>• Regulatory Framework Mapping</li>
+                <li>• Audit Trail Support</li>
+                <li>• Compliance Reporting Support</li>
                 <li>• Risk Assessment Tools</li>
                 <li>• Governance Framework</li>
               </ul>

@@ -237,16 +237,16 @@ const TechnicalImplementation = () => {
               <h3 style={{ color: '#00f3ff', fontSize: '1.2rem' }}>Compliance and Reporting</h3>
             </div>
             <p style={{ color: '#ccc', lineHeight: '1.6' }}>
-              Comprehensive compliance monitoring and automated reporting capabilities ensure regulatory requirements are met and maintained.
+              Comprehensive compliance monitoring and automated reporting capabilities support risk management for regulatory requirements and ongoing documentation.
             </p>
             <div style={{ marginTop: '1.5rem' }}>
-              <h4 style={{ color: '#00f3ff', fontSize: '1rem', marginBottom: '0.5rem' }}>Compliance Features:</h4>
+              <h4 style={{ color: '#00f3ff', fontSize: '1rem', marginBottom: '0.5rem' }}>Compliance Support:</h4>
               <ul style={{ color: '#ccc', fontSize: '0.9rem', lineHeight: '1.4', listStyle: 'none' }}>
-                <li>• Multi-Framework Compliance Support</li>
-                <li>• Automated Audit Trails</li>
-                <li>• Regulatory Reporting Generation</li>
+                <li>• Multi-Framework Mapping Support</li>
+                <li>• Audit Trail Automation</li>
+                <li>• Regulatory Reporting Workflows</li>
                 <li>• Risk Assessment and scoring</li>
-                <li>• Continuous Compliance Monitoring</li>
+                <li>• Continuous Control Monitoring</li>
               </ul>
             </div>
           </motion.div>
