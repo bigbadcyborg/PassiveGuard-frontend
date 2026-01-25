@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getSelectedClinicId } from './clinicStorage';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
@@ -13,8 +14,12 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
+    const clinicId = getSelectedClinicId();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (clinicId) {
+      config.headers['X-Clinic-Id'] = clinicId;
     }
     return config;
   },
@@ -82,6 +87,15 @@ export const debugAPI = {
   getAgents: () => api.get('/debug/agents'),
 };
 
+export const clinicsAPI = {
+  list: () => api.get('/msp/clinics'),
+  get: (clinicId) => api.get(`/msp/clinics/${clinicId}`),
+  getAssets: (clinicId) => api.get(`/msp/clinics/${clinicId}/assets`),
+  getReports: (clinicId) => api.get(`/msp/clinics/${clinicId}/reports`),
+  getReport: (clinicId, reportId) => api.get(`/msp/clinics/${clinicId}/reports/${reportId}`),
+  getAlerts: (clinicId) => api.get(`/msp/clinics/${clinicId}/alerts`),
+};
+
 export const scheduledScansAPI = {
   list: () => api.get('/scheduled-scans'),
   get: (id) => api.get(`/scheduled-scans/${id}`),
@@ -93,4 +107,3 @@ export const scheduledScansAPI = {
 };
 
 export default api;
-
