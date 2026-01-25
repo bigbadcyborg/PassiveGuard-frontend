@@ -29,6 +29,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Agents from './pages/Agents';
 import DebugAgents from './pages/DebugAgents';
+import Reports from './pages/Reports';
 import Alerts from './pages/Alerts';
 import Workflows from './pages/features/Workflows';
 import Response from './pages/features/Response';
@@ -162,6 +163,10 @@ function MainContent({ isAuthenticated }) {
           }
         />
         <Route
+          path="/reports"
+          element={
+            <PrivateRoute>
+              <Reports />
           path="/alerts"
           element={
             <PrivateRoute>

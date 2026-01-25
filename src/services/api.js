@@ -62,6 +62,19 @@ export const scansAPI = {
   },
 };
 
+export const reportsAPI = {
+  list: () => api.get('/reports'),
+  get: (reportId) => api.get(`/reports/${reportId}`),
+  generate: (formData) => api.post('/reports/generate', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  }),
+  download: (reportId, format = 'pdf') => api.get(`/reports/${reportId}/download?format=${format}`, {
+    responseType: 'blob',
+  }),
+};
+
 export const findingsAPI = {
   updateStatus: (findingId, status) => 
     api.patch(`/findings/${findingId}/status`, { status }),
