@@ -56,6 +56,7 @@ function Navbar() {
                 </div>
               </div>
               <Link to="/scans" className="navbar-link">Scans</Link>
+              <Link to="/reports" className="navbar-link">Reports</Link>
               <Link to="/agents" className="navbar-link">Agents</Link>
               <Link to="/pricing" className="navbar-link">Pricing</Link>
               <Link to="/blog" className="navbar-link">Blog</Link>
@@ -111,4 +112,3 @@ function Navbar() {
 }
 
 export default Navbar;
-

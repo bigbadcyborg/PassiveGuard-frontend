@@ -1,0 +1,254 @@
+.reports-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reports-header h1 {
+  margin: 0 0 8px;
+}
+
+.reports-header p {
+  margin: 0;
+  color: var(--text-muted, #9fa6b2);
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.reports-card {
+  background: rgba(10, 14, 30, 0.8);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.reports-card__header {
+  margin-bottom: 20px;
+}
+
+.reports-card__header h2 {
+  margin: 0 0 8px;
+}
+
+.reports-card__header p {
+  margin: 0;
+  color: var(--text-muted, #9fa6b2);
+}
+
+.reports-clinic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.clinic-card {
+  background: rgba(18, 24, 48, 0.7);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(0, 255, 255, 0.08);
+}
+
+.clinic-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.clinic-card__header h3 {
+  margin: 0;
+}
+
+.clinic-card__header span {
+  display: block;
+  color: var(--text-muted, #9fa6b2);
+  font-size: 0.85rem;
+}
+
+.clinic-card__body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clinic-card__body li {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 0.8fr;
+  gap: 12px;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.reports-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reports-form__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reports-form__section h3 {
+  margin: 0 0 4px;
+}
+
+.reports-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--text-muted, #c3c8d0);
+}
+
+.reports-form input[type="text"],
+.reports-form input[type="email"] {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  background: rgba(9, 12, 28, 0.9);
+  color: #fff;
+}
+
+.reports-form input[type="file"] {
+  padding: 8px 0;
+  color: #fff;
+}
+
+.reports-form__highlight {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reports-empty {
+  color: var(--text-muted, #9fa6b2);
+  margin: 0;
+}
+
+.reports-error {
+  background: rgba(255, 0, 85, 0.1);
+  border: 1px solid rgba(255, 0, 85, 0.4);
+  color: #ff6999;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.report-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.report-template {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.report-template__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+  padding-bottom: 16px;
+}
+
+.report-template__branding {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.report-template__branding-block {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px 12px;
+  border-radius: 8px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.report-template__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted, #9fa6b2);
+}
+
+.report-template__muted {
+  font-size: 0.8rem;
+  color: var(--text-muted, #9fa6b2);
+}
+
+.report-template__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-template__section h3 {
+  margin: 0;
+}
+
+.report-template__table {
+  display: grid;
+  gap: 8px;
+}
+
+.report-template__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.report-template__row--header {
+  background: rgba(0, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+.report-template__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(0, 255, 255, 0.1);
+  padding-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .clinic-card__body li {
+    grid-template-columns: 1fr;
+  }
+
+  .report-template__header {
+    flex-direction: column;
+  }
+}
