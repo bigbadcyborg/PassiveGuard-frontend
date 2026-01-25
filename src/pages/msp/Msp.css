@@ -1,0 +1,130 @@
+.msp-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.msp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.msp-header h1 {
+  font-size: 28px;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.msp-subtitle {
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.msp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.msp-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text-primary);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.msp-card:hover {
+  border-color: var(--neon-cyan);
+  background: rgba(0, 243, 255, 0.05);
+}
+
+.msp-card-title {
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--neon-cyan);
+}
+
+.msp-card-value {
+  font-size: 32px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.msp-card-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.msp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.msp-section-title {
+  font-size: 18px;
+  color: var(--neon-purple);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.msp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.msp-table th,
+.msp-table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.msp-table th {
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.msp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid rgba(0, 243, 255, 0.4);
+  color: var(--neon-cyan);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.msp-empty {
+  border: 1px dashed var(--glass-border);
+  padding: 20px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+}
+
+.msp-link {
+  color: var(--neon-cyan);
+  text-decoration: none;
+}
+
+.msp-link:hover {
+  text-decoration: underline;
+}

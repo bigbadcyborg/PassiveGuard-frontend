@@ -36,6 +36,12 @@ import Integrations from './pages/features/Integrations';
 import PlatformOverview from './pages/PlatformOverview';
 import Coverage from './pages/Coverage';
 import Tuning from './pages/Tuning';
+import MspDashboard from './pages/msp/MspDashboard';
+import Clinics from './pages/msp/Clinics';
+import ClinicDetail from './pages/msp/ClinicDetail';
+import ClinicReports from './pages/msp/ClinicReports';
+import ClinicReportDetail from './pages/msp/ClinicReportDetail';
+import { ClinicProvider } from './context/ClinicContext';
 import './App.css';
 
 function PrivateRoute({ children }) {
@@ -100,6 +106,10 @@ function MainContent({ isAuthenticated }) {
           }
         />
         <Route
+          path="/msp"
+          element={
+            <PrivateRoute>
+              <MspDashboard />
           path="/onboarding"
           element={
             <PrivateRoute>
@@ -108,6 +118,34 @@ function MainContent({ isAuthenticated }) {
           }
         />
         <Route
+          path="/msp/clinics"
+          element={
+            <PrivateRoute>
+              <Clinics />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/msp/clinics/:clinicId"
+          element={
+            <PrivateRoute>
+              <ClinicDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/msp/clinics/:clinicId/reports"
+          element={
+            <PrivateRoute>
+              <ClinicReports />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/msp/clinics/:clinicId/reports/:reportId"
+          element={
+            <PrivateRoute>
+              <ClinicReportDetail />
           path="/external-assets"
           element={
             <PrivateRoute>
@@ -214,8 +252,10 @@ function App() {
     <Router basename={process.env.PUBLIC_URL}>
       <div className="App">
         <div className="global-scanline"></div>
-        <Navbar />
-        <MainContent isAuthenticated={isAuthenticated} />
+        <ClinicProvider isAuthenticated={isAuthenticated}>
+          <Navbar />
+          <MainContent isAuthenticated={isAuthenticated} />
+        </ClinicProvider>
       </div>
     </Router>
   );
