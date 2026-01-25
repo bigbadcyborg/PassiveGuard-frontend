@@ -92,6 +92,14 @@ export const scheduledScansAPI = {
   getHistory: (id) => api.get(`/scheduled-scans/${id}/history`),
 };
 
+export const alertsAPI = {
+  list: (params = {}) => api.get('/alerts', { params }),
+  acknowledge: (alertId) => api.post(`/alerts/${alertId}/acknowledge`),
+};
+
+export const changeDetectionAPI = {
+  list: (scanId) => api.get(`/scans/${scanId}/changes`),
+  listClinicTimeline: (clinicId) => api.get(`/clinics/${clinicId}/changes`),
 export const discoveryScansAPI = {
   list: () => api.get('/discovery-scans'),
   get: (scanId) => api.get(`/discovery-scans/${scanId}`),
